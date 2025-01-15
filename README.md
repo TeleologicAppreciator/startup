@@ -1,4 +1,4 @@
-# Your startup name here
+# Temp Startup changed name
 
 [My Notes](notes.md)
 

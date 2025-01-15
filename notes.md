@@ -1,4 +1,4 @@
-# CS 260 Notes
+# CS 260 Notes -under maintenance-
 
 [My startup - Simon](https://simon.cs260.click)
 
