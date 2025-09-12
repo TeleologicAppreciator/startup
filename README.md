@@ -30,7 +30,7 @@ Have you ever wanted to test your stock market intuition? At Stock Sprint, every
 
 ### Design
 
-![Design image](Stock Sprint Concept Page.png)
+![Design image]("Stock Sprint Concept Page.png")
 
 ```mermaid
 sequenceDiagram
