@@ -43,20 +43,24 @@ sequenceDiagram
 
 ### Key features
 
-- Describe your key feature
-- Describe your key feature
-- Describe your key feature
+- Secure login over HTTPS
+- Look up opening market stock prices
+- Try to get the most virtual money in a day
+- Daily leaderboard and all time leaderboard
 
 ### Technologies
 
 I am going to use the required technologies in the following ways.
 
-- **HTML** - Description here
-- **CSS** - Description here
-- **React** - Description here
-- **Service** - Description here
-- **DB/Login** - Description here
-- **WebSocket** - Description here
+- **HTML** - Uses correct HTML structure for application. Two HTML pages for application, one for login, and one for overview functionality
+- **CSS** - Good application styling that looks good on different screen sizes. Uses good whitespace, color choice, and contrast.
+- **React** - Provides login, ability to "buy" stocks, displaying the leaderboard, backend endpoint calls. Single page application with component views and reactive to user's actions.
+- **Service** - Backend service with endpoints for:
+                - Login
+                - Buying stocks
+                - Updating leaderboard
+- **DB/Login** - Store authenticated information, users, what stocks they bought, leaderboard information.
+- **WebSocket** - Sends real-time notifications to connected clients when daily leaderboard updates are posted.
 
 ## 🚀 AWS deliverable
 
