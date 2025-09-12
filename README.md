@@ -1,4 +1,4 @@
-# Your startup name here
+# Stock Sprint
 
 [My Notes](notes.md)
 
@@ -12,6 +12,10 @@ A brief description of the application here. Lorem ipsum dolor sit amet, consect
 >  If you are not familiar with Markdown then you should review the [documentation](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) before continuing.
 
 ## 🚀 Specification Deliverable
+
+### Elevator Pitch
+
+Have you ever wanted to test your stock market intuition? At Stock Sprint, every day users receive virtual currency to invest in stocks at the market’s opening price and automatically sell at the end of the day. Compete with other participants and climb the leaderboard to see who has the best market instincts.
 
 > [!NOTE]
 >  Fill in this sections as the submission artifact for this deliverable. You can refer to this [example](https://github.com/webprogramming260/startup-example/blob/main/README.md) for inspiration.

@@ -101,4 +101,5 @@ Handling the toggling of the checkboxes was particularly interesting.
 ## GitHub
 
 I learned about GitHub and how it helps version control.
+
 I learned how to do markdown for GitHub such as how to include images
