@@ -13,10 +13,6 @@ A brief description of the application here. Lorem ipsum dolor sit amet, consect
 
 ## 🚀 Specification Deliverable
 
-### Elevator Pitch
-
-Have you ever wanted to test your stock market intuition? At Stock Sprint, every day users receive virtual currency to invest in stocks at the market’s opening price and automatically sell at the end of the day. Compete with other participants and climb the leaderboard to see who has the best market instincts.
-
 > [!NOTE]
 >  Fill in this sections as the submission artifact for this deliverable. You can refer to this [example](https://github.com/webprogramming260/startup-example/blob/main/README.md) for inspiration.
 
@@ -30,7 +26,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 ### Elevator pitch
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Have you ever wanted to test your stock market intuition? At Stock Sprint, every day users receive virtual currency to invest in stocks at the market’s opening price and automatically sell at the end of the day. Compete with other participants and climb the leaderboard to see who has the best market instincts.
 
 ### Design
 
