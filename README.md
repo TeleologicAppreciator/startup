@@ -32,13 +32,6 @@ Have you ever wanted to test your stock market intuition? At Stock Sprint, every
 
 ![Design image](concept.png)
 
-```mermaid
-sequenceDiagram
-    actor You
-    actor Website
-    You->>Website: Replace this with your design
-```
-
 ### Key features
 
 - Secure login over HTTPS
@@ -49,15 +42,15 @@ sequenceDiagram
 
 I am going to use the required technologies in the following ways.
 
-- **HTML** - Uses correct HTML structure for application. Two HTML pages for application, one for login, and one for overview functionality
-- **CSS** - Good application styling that looks good on different screen sizes. Uses good whitespace, color choice, and contrast.
-- **React** - Provides login, ability to "buy" stocks, displaying the leaderboard, backend endpoint calls. Single page application with component views and reactive to user's actions.
+- **HTML** - Uses correct HTML structure with two pages: one for login, and one for the overview.
+- **CSS** - Responsive application styling that looks good on different screen sizes. Uses good whitespace, color choice, and contrast.
+- **React** - Single-page application with components for login, buying sotcks, leaderboard display, and backend calls. Reacts dynamically to user actions.
 - **Service** - Backend service with endpoints for:
                 - Login
                 - Buying stocks
                 - Updating leaderboard
-- **DB/Login** - Store authenticated information, users, what stocks they bought, leaderboard information.
-- **WebSocket** - Sends real-time notifications to connected clients when daily leaderboard updates are posted.
+- **DB/Login** - Stores users, stock purchases, and leaderboard data.
+- **WebSocket** - Sends real-time notifications to connected clients when the daily leaderboard updates.
 
 ## 🚀 AWS deliverable
 
