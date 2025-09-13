@@ -26,7 +26,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 ### Elevator pitch
 
-Have you ever wanted to test your stock market intuition? At Stock Sprint, every day users receive virtual currency to invest in stocks at the market’s opening price and automatically sell at the end of the day. Compete with other participants and climb the leaderboard to see who has the best market instincts.
+Have you ever wanted to test your stock market intuition? At Stock Sprint, every day users receive fake currency to invest in stocks at the market’s opening price and automatically sell at the end of the day. Compete with other participants and climb the leaderboard to see who has the best market instincts.
 
 ### Design
 

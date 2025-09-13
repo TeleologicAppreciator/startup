@@ -103,3 +103,9 @@ Handling the toggling of the checkboxes was particularly interesting.
 I learned about GitHub and how it helps version control.
 
 I learned how to do markdown for GitHub such as how to include images
+
+## Amazon Web Server
+
+Remember to turn off elastic IP when course is over
+
+Elastic IP allows us to shut off server while retaining public IP, otherwise it would change.
