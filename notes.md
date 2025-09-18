@@ -109,3 +109,7 @@ I learned how to do markdown for GitHub such as how to include images
 Remember to turn off elastic IP when course is over
 
 Elastic IP allows us to shut off server while retaining public IP, otherwise it would change.
+
+## HTML
+
+Image tags are self closing and need width specified to size properly
