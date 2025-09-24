@@ -102,7 +102,7 @@ Handling the toggling of the checkboxes was particularly interesting.
 
 I learned about GitHub and how it helps version control.
 
-I learned how to do markdown for GitHub such as how to include images
+I learned how to do markdown for GitHub such as how to include images.
 
 ## Amazon Web Server
 
@@ -112,4 +112,8 @@ Elastic IP allows us to shut off server while retaining public IP, otherwise it 
 
 ## HTML
 
-Image tags are self closing and need width specified to size properly
+Image tags are self closing and need width specified to size properly.
+
+## Simon deployment
+
+I can study the basics of how I can use HTML with the provided simon code.
