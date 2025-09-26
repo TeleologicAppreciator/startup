@@ -1,36 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Login</title>
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+</head>
+<body>
+  <header>
     <h1>Stock Sprint!</h1>
-    <menu>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="overview.html">Account</a></li>
-          <li><a href="leaderboard.html">Leaderboard</a></li>
-          <li><a href="about.html">About</a></li>
-    </menu>
-  </head>
-
-  <hr>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="overview.html">Account</a></li>
+        <li><a href="leaderboard.html">Leaderboard</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+    <hr>
+  </header>
 
   <main>
-      <h1>Welcome</h1>
-      <form method="get" action="play.html">
-        <div>
-          <input type="text" placeholder="your@email.com" />
-        </div>
-        <div>
-          <input type="password" placeholder="password" />
-        </div>
-        <button type="submit">Login</button>
-        <button type="submit">Create</button>
-      </form>
-    </main>
+    <h1>Welcome</h1>
+    <form method="get" action="play.html">
+      <div>
+        <input type="text" name="email" placeholder="your@email.com" />
+      </div>
+      <div>
+        <input type="password" name="password" placeholder="password" />
+      </div>
+      <button type="submit">Login</button>
+      <button type="button">Create</button>
+    </form>
+  </main>
 
-    <footer>
-      <hr />
-      <span class="text-reset">Bryce Conrad</span>
-      <br />
-      <a href="https://github.com/TeleologicAppreciator/startup">GitHub</a>
-    </footer>
+  <footer>
+    <hr />
+    <span class="text-reset">Bryce Conrad</span><br />
+    <a href="https://github.com/TeleologicAppreciator/startup">GitHub</a>
+  </footer>
+</body>
 </html>
