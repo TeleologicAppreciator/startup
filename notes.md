@@ -117,3 +117,4 @@ Image tags are self closing and need width specified to size properly.
 ## Simon deployment
 
 I can study the basics of how I can use HTML with the provided simon code.
+I can deploy files to my website using the following command: ./deployFiles.sh -k <yourpemkey> -h <yourdomain> -s simon
