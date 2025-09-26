@@ -112,7 +112,16 @@ Elastic IP allows us to shut off server while retaining public IP, otherwise it 
 
 ## HTML
 
-Image tags are self closing and need width specified to size properly.
+Every page starts with a <!DOCTYPE html> and has <html>, <head>, and <body> sections.
+The <head> contains metadata like <title>, <meta>, and links to styles or scripts.
+The <body> contains all the visible content of the webpage.
+Use heading tags (<h1>–<h6>) for titles and to give structure to content.
+Use <p> for paragraphs of text instead of just line breaks.
+Use <ul> and <ol> with <li> for lists, including navigation menus.
+Use <a> for hyperlinks to other pages or websites.
+Use <table>, <thead>, <tbody>, <tr>, <th>, and <td> for tabular data.
+Use <form>, <input>, <button>, and <label> for user input.
+Use <header>, <nav>, <main>, <section>, and <footer> for semantic page layout.
 
 ## Simon deployment
 
