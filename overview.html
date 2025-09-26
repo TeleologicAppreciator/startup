@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
       <title>Account Overview</title>
-      Account Overview
+      <h1>Stock Sprint</h1>
       <menu>
           <li><a href="index.html">Home</a></li>
           <li><a href="overview.html">Account</a></li>
@@ -10,9 +10,51 @@
           <li><a href="about.html">About</a></li>
         </menu>
   </head>
-  <body>
-    allocated funds:
-  </body>
+  <hr>
+  <main>
+    Unallocated funds: $30.00
+    <form method="get" action="play.html">
+        <div>
+          <input type="text" placeholder="Stock symbol to buy" /> <button>Buy</button>
+        </div>
+        Price: $0.00 - 1x <button>+</button> <button>-</button>
+      </form>
+      <br>
+      Allocated funds: $9970.00
+
+
+      <table>
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th>Total Cost</th>
+            <th>Owned</th>
+            <th>Price Per
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>GOOG</td>
+            <td>$9000.00</td>
+            <td>9</td>
+            <td>$1000.00</td>
+          </tr>
+          <tr>
+            <td>AMD</td>
+            <td>$900.00</td>
+            <td>9</td>
+            <td>$100.00</td>
+          </tr>
+          <tr>
+            <td>ACME</td>
+            <td>$70.00</td>
+            <td>7</td>
+            <td>$10.00</td>
+          </tr>
+        </tbody>
+      </table>
+  </main>
+
 <footer>
       <hr />
       <span class="text-reset">Bryce Conrad</span>
