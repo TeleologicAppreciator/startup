@@ -210,3 +210,27 @@ Flexbox is especially useful for splitting areas of an app (e.g., controls vs co
 Combine with media queries for responsiveness:
   Change orientation (flex-direction: column) in portrait mode.
   Hide elements (e.g., header, footer) when viewport is too small.
+
+## CSS debug:
+
+Use the browser’s developer tools (e.g., Chrome DevTools) to inspect HTML and CSS when things don’t render as expected.
+Right-click → Inspect opens the debugger; the Elements tab shows HTML, applied styles, and the CSS box model.
+Hovering over elements highlights padding, borders, and margins directly in the page.
+The Styles pane shows active and inherited CSS; you can edit or add properties live to test changes without editing files.
+Common debugging issues include default margins, padding, or overflow — reset them when needed.
+Debugging lets you experiment, visualize layout problems, and even learn from other websites by inspecting their CSS.
+
+## CSS Framework
+
+CSS frameworks bundle common patterns and components to speed up development and provide consistent user experiences.
+Popular frameworks:
+  Tailwind CSS
+    Utility-first approach — styling is applied directly to HTML via small classes.
+    Lightweight and flexible, avoids heavy predefined components.
+    Growing rapidly in popularity (especially with Tailwind UI).
+  Bootstrap
+    Long-established and widely used.
+    Provides a large set of responsive, pre-styled components.
+    Easy to add via CDN links; advanced features may require Bootstrap’s JavaScript.
+    Very consistent look, but can make sites feel generic.
+Frameworks reduce setup time but may limit uniqueness if overused.
