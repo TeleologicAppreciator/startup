@@ -184,3 +184,29 @@ Viewport meta tag ensures mobile browsers don’t auto-scale and lets CSS handle
 Float moves elements left or right, allowing text/content to wrap around them.
 Media queries (@media) apply CSS rules based on device size or orientation (e.g., hide elements in portrait mode).
 Flexbox and Grid are modern display systems that automatically adapt layout to different screen sizes.
+
+## CSS Grid:
+
+Use display: grid to arrange child elements in a grid layout.
+Define columns and rows with grid-template-columns, grid-auto-rows, and control spacing with grid-gap.
+Grid is responsive and uses fractional units (fr) to share available space.
+
+## CSS Flex:
+
+Flexbox is used to create layouts that adapt responsively as the window resizes or orientation changes.
+Use display: flex on a container to enable flex layout for its children.
+Control the direction with flex-direction:
+  row arranges children side by side.
+  column arranges children vertically.
+Use the flex property to control how children grow or shrink:
+  flex: 0 80px → fixed size (does not grow, base size 80px).
+  flex: 1 → flexible, takes up remaining space.
+  Ratios (e.g., flex: 1 vs flex: 3) divide space proportionally.
+Typical usage:
+  Header and footer: fixed sizes.
+  Main content area: flex grows to fill remaining space.
+  Nested flex containers allow side-by-side sections.
+Flexbox is especially useful for splitting areas of an app (e.g., controls vs content) while keeping proportions consistent as the screen resizes.
+Combine with media queries for responsiveness:
+  Change orientation (flex-direction: column) in portrait mode.
+  Hide elements (e.g., header, footer) when viewport is too small.
