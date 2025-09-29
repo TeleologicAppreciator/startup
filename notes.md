@@ -149,7 +149,7 @@ Common properties: background, border, text color, font, spacing (margin, paddin
 Units can be absolute (px, pt, in, cm), relative (%, em, rem, ex), or viewport-based (vw, vh, vmin, vmax).
 Colors can be defined by keywords (red, blue), hex codes, RGB/RGBA functions, or HSL/HSLA functions.
 
-# CSS Fonts
+## CSS Fonts
 
 Fonts affect readability and design quality — good fonts improve user experience, bad fonts drive users away.
 Use font-family to define fonts. Provide an ordered list so the browser uses the first available font.
@@ -161,3 +161,12 @@ Main font families:
 Fonts can be imported instead of relying only on system defaults.
   Use @font-face to load a custom font from your server.
   Use @import (e.g., Google Fonts) to load hosted fonts easily.
+
+## CSS Animations:
+
+CSS animations make elements feel interactive and alive.
+Use animation properties (animation-name, animation-duration, etc.) with @keyframes to define changes over time.
+Keyframes describe what properties change at certain points (e.g., from, to, or percentages).
+CSS automatically interpolates smooth transitions between defined keyframes.
+Animations can be simple (fade, grow, move) or complex (bouncing, looping, multi-step).
+Useful for enhancing UI, drawing attention, or adding personality (e.g., text zooming, floating clouds, animated watch).
