@@ -148,3 +148,16 @@ CSS declarations define a property and value for selected elements.
 Common properties: background, border, text color, font, spacing (margin, padding), size (width, height), layout (display, flex, grid, float, position), and effects (shadow, transform, opacity, overflow).
 Units can be absolute (px, pt, in, cm), relative (%, em, rem, ex), or viewport-based (vw, vh, vmin, vmax).
 Colors can be defined by keywords (red, blue), hex codes, RGB/RGBA functions, or HSL/HSLA functions.
+
+# CSS Fonts
+
+Fonts affect readability and design quality — good fonts improve user experience, bad fonts drive users away.
+Use font-family to define fonts. Provide an ordered list so the browser uses the first available font.
+Main font families:
+  Serif (with decorative strokes).
+  Sans-serif (clean, no strokes).
+  Monospace / fixed (equal-width characters, good for code/data).
+  Symbol (icons, arrows, emojis).
+Fonts can be imported instead of relying only on system defaults.
+  Use @font-face to load a custom font from your server.
+  Use @import (e.g., Google Fonts) to load hosted fonts easily.
