@@ -170,3 +170,17 @@ Keyframes describe what properties change at certain points (e.g., from, to, or 
 CSS automatically interpolates smooth transitions between defined keyframes.
 Animations can be simple (fade, grow, move) or complex (bouncing, looping, multi-step).
 Useful for enhancing UI, drawing attention, or adding personality (e.g., text zooming, floating clouds, animated watch).
+
+## CSS Responsive Design:
+
+Responsive design makes layouts adapt to different screen sizes and orientations (desktop, mobile, kiosks, car dashboards).
+Display property controls how elements render:
+none hides the element.
+block fills parent width (default for div, p).
+inline fits content size (default for span, b).
+flex arranges children in flexible rows/columns.
+grid arranges children in a grid layout.
+Viewport meta tag ensures mobile browsers don’t auto-scale and lets CSS handle responsiveness.
+Float moves elements left or right, allowing text/content to wrap around them.
+Media queries (@media) apply CSS rules based on device size or orientation (e.g., hide elements in portrait mode).
+Flexbox and Grid are modern display systems that automatically adapt layout to different screen sizes.
