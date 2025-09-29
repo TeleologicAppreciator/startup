@@ -141,3 +141,10 @@ Use class selectors with a period (.classname) to target elements by class.
 Use ID selectors with a hash (#idname) to target unique elements.
 Use attribute selectors like [href], [class="summary"], or [href*="https://"] to style based on attributes.
 Use pseudo selectors like :hover, :visited, :first-child, or :nth-child() to style based on state, position, or interaction.
+
+## CSS Declarations
+
+CSS declarations define a property and value for selected elements.
+Common properties: background, border, text color, font, spacing (margin, padding), size (width, height), layout (display, flex, grid, float, position), and effects (shadow, transform, opacity, overflow).
+Units can be absolute (px, pt, in, cm), relative (%, em, rem, ex), or viewport-based (vw, vh, vmin, vmax).
+Colors can be defined by keywords (red, blue), hex codes, RGB/RGBA functions, or HSL/HSLA functions.
