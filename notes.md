@@ -127,3 +127,17 @@ Use <header>, <nav>, <main>, <section>, and <footer> for semantic page layout.
 
 I can study the basics of how I can use HTML with the provided simon code.
 I can deploy files to my website using the following command: ./deployFiles.sh -k <yourpemkey> -h <yourdomain> -s simon
+
+## CSS Selectors
+
+Use element selectors (like body, h1, section) to style by tag name.
+Use the wildcard * to select all elements at once.
+Use combinators to define relationships:
+  section h2 selects all h2 inside section.
+  section > p selects p directly inside section.
+  h2 ~ p selects p siblings that follow an h2.
+  div + p selects the p immediately after a div.
+Use class selectors with a period (.classname) to target elements by class.
+Use ID selectors with a hash (#idname) to target unique elements.
+Use attribute selectors like [href], [class="summary"], or [href*="https://"] to style based on attributes.
+Use pseudo selectors like :hover, :visited, :first-child, or :nth-child() to style based on state, position, or interaction.
