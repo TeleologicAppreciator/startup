@@ -58,6 +58,28 @@ td, th {
   text-align: center;
 }
 
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 20px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #404f3f;
+  font-weight: bold;
+}
+
+nav a.active {
+  color: white;
+}
+
+h1 {
+  color: black
+}
+
 .float-img {
   float: right;
   margin: 0 15px 15px 0;
