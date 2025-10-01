@@ -5,8 +5,14 @@ body {
 }
 
 footer {
-  background-color: blue;
+  background-color: lightskyblue;
   color: white;
   padding: 10px;
-  text-align: center;
+
+  flex: 0 30px;
+}
+
+.navbar-brand {
+  padding-left: 0.3em;
+  border-bottom: solid rgb(182, 182, 182) thin;
 }
