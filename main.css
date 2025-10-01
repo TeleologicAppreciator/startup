@@ -1,15 +1,16 @@
-@media (orientation: portrait) {
-  main {
-    flex-direction: column;
-  }
-}
-
 @media (max-height: 700px) {
   header {
     display: none;
   }
   footer {
     display: none;
+  }
+
+  .float-img {
+    float: none;
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
   }
 }
 
@@ -45,11 +46,23 @@ main {
   flex-direction: column;
 }
 
-aside {
+table {
+  margin: 20px auto;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+td, th {
+  border: 1px solid #999;
+  padding: 12px 20px;
+  text-align: center;
+}
+
+.float-img {
   float: right;
-  padding: 3em;
-  margin: 0.5em;
-  border: black solid thin;
+  margin: 0 15px 15px 0;
+  width: 200px;
+  height: auto;
 }
 
 .navbar-brand {
