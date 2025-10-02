@@ -229,9 +229,60 @@ form button[type="button"]:hover {
   color: #84140c
 }
 
+.winner-banner {
+  width: 100%;
+  max-width: 100%;
+  margin: 40px 0;
+  text-align: center;
+}
+
+.banner-bar {
+  height: 6px;
+  background-color: #20271f; /* match your Welcome color */
+}
+
+.banner-message {
+  padding: 15px;
+  background-color: #f4f4f4;
+  color: #20271f;
+  font-weight: bold;
+  font-size: 1.1rem;
+  white-space: nowrap; /* useful for future scrolling */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .header-left {
   font-weight: bold;
   font-size: 1.2em;
+}
+
+.app-description {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px 30px;
+  background-color: #e5e1d8;
+  border-left: 6px solid #7474b5;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #20271f;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.profit-banner {
+  align-self: flex-start;
+  display: inline-block;
+  background-color: #e5e1d8;
+  border-left: 4px solid #7474b5;
+  padding: 10px 16px;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #20271f;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  margin-top: 15px;
+  margin-left: 1%;
 }
 
 section:nth-child(1) {

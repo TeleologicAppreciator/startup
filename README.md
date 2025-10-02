@@ -76,12 +76,12 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Header, footer, and main content body** - I did not complete this part of the deliverable.
-- [ ] **Navigation elements** - I did not complete this part of the deliverable.
-- [ ] **Responsive to window resizing** - I did not complete this part of the deliverable.
-- [ ] **Application elements** - I did not complete this part of the deliverable.
-- [ ] **Application text content** - I did not complete this part of the deliverable.
-- [ ] **Application images** - I did not complete this part of the deliverable.
+- [X] **Header, footer, and main content body** - Stylized header with background color, fixed positioning, and internal layout using flexbox. Footer includes spacing, colors, and github link. Main content structured using flexbox.
+- [X] **Navigation elements** - Consistent navigation bar with stylized links, active state, horizontal scroll support for smaller screens, and responsive font sizing using clamp().
+- [X] **Responsive to window resizing** - Implemented responsive design using flexbox and relative units like % and clamp(). Included a viewport meta tag for mobile support. Used media queries to adjust layout for smaller viewports.
+- [X] **Application elements** - Styled login form, buy form, leaderboard table, and profit banner using CSS with clean alignment, inline-block banners, shadows, and border accents.
+- [X] **Application text content** - Styled text elements like the app description, "Welcome" header, and profit summary using typography, color, padding, and layout. Emphasis on clean, readable presentation.
+- [X] **Application images** - Applied responsive styles to floating images, including max-width: 100%, float, and media queries for layout adjustments on smaller screens.
 
 ## 🚀 React part 1: Routing deliverable
 
