@@ -206,6 +206,29 @@ form button[type="button"]:hover {
   border-bottom: solid rgb(182, 182, 182) thin;
 }
 
+.welcome-title {
+  text-align: center;
+  margin-top: 60px;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #20271f;
+}
+
+.unallocated-funds {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color:#6f876d
+}
+
+.allocated-funds {
+  width: 98%;
+  margin: 0 auto 10px auto;
+  font-weight: bold;
+  color: #84140c
+}
+
 .header-left {
   font-weight: bold;
   font-size: 1.2em;
