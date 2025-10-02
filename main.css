@@ -111,6 +111,64 @@ h1 {
   color: black
 }
 
+form {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+form h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+form input[type="text"],
+form input[type="password"] {
+  padding: 12px 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+form input[type="text"]:focus,
+form input[type="password"]:focus {
+  border-color: #7474b5;
+  outline: none;
+}
+
+form button {
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: #7474b5;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+form button:hover {
+  background-color: #5c5ca9;
+}
+
+form button[type="button"] {
+  background-color: #555;
+}
+
+form button[type="button"]:hover {
+  background-color: #444;
+}
+
+
 .leaderboard-page {
   background-image: url("https://upload.wikimedia.org/wikipedia/commons/6/6a/Digital_money_illustration_20180111.jpg");
   background-size: cover;
