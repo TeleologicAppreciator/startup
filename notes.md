@@ -278,3 +278,68 @@ Replace <App/> text with your name.
 Change counter to increment by 10 instead of 1.
 
 Vite speeds up development and offers a modern alternative to older bundlers like Webpack. Great choice for React apps in both learning and production.
+
+## React Components
+
+React components modularize application functionality and reflect the UI a user interacts with.
+They support code reuse and make complex UIs manageable through composable components.
+
+Rendering JSX
+Components return JSX which defines what appears in the browser.
+JSX inside a component is rendered and injected into the DOM.
+Example:
+JSX:
+<div>Component: <Demo /></div>
+Component:
+function Demo() {
+  const who = 'world';
+  return <b>Hello {who}</b>;
+}
+Resulting HTML:
+<div>Component: <b>Hello world</b></div>
+JSX without components
+JSX can be stored in variables and rendered directly.
+const hello = <div>Hello</div>;
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(hello);
+Result: <div>Hello</div>
+
+Styling Components
+Use external CSS files for styling rather than inline styles.
+Import CSS in your component file.
+Use className instead of class (since class is a JS keyword).
+index.css:
+div {
+  font-family: sans-serif;
+}
+.code {
+  color: green;
+}
+JSX using styles:
+import './index.css';
+function App() {
+  return (
+    <div>
+      <pre className='code'>console.log(1+1);</pre>
+      <p>Simple math</p>
+    </div>
+  );
+}
+
+Child Components
+Components can render other components, forming a nested tree.
+Promotes clean structure and separation of concerns.
+
+Properties (Props)
+Props are values passed into components as attributes.
+Accessible in the component as the props object.
+
+State
+State is internal to a component and managed with the useState hook.
+useState returns a variable and a function to update it.
+Changing state triggers a re-render of the component.
+
+Reactivity
+React components re-render when props or state change.
+This is the core of React's reactive UI system.
+Changes trigger the render function of the component and its children.
