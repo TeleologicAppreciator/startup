@@ -234,3 +234,47 @@ Popular frameworks:
     Easy to add via CDN links; advanced features may require Bootstrap’s JavaScript.
     Very consistent look, but can make sites feel generic.
 Frameworks reduce setup time but may limit uniqueness if overused.
+
+## React Vite
+
+Benefits:
+Fast dev server with hot module replacement (HMR).
+Built-in support for React, JSX, TypeScript, CSS preprocessors.
+Minimal configuration via command-line interface (CLI).
+Great for both prototyping and production-ready apps.
+
+Creating a React app with Vite:
+npm create vite@latest demoVite -- --template react
+cd demoVite
+npm install
+npm run dev
+demoVite folder created with all necessary config.
+npm run dev launches local HTTP server with live reload.
+Press o to open in browser, q to quit, h for help.
+
+Key files and folders:
+index.html — Main HTML file with root element (#root) for React.
+main.jsx — Entry point that renders <App/> into #root.
+App.jsx — Top-level React component (e.g., counter).
+vite.config.js — Vite settings (e.g., React plugin).
+package.json — Scripts and dependencies.
+dist/ — Output folder after production build.
+src/ — Main source files, including JSX and CSS.
+public/ — Static assets (e.g., logos, favicons).
+
+JSX vs JS:
+Use .jsx for files containing JSX (preferred for editor support).
+.js is fine for regular JavaScript files.
+
+Production build:
+npm run build
+Transpiles, minifies, and bundles assets to dist/.
+vite build prepares code for deployment.
+Used in scripts like deployReact.sh to publish production-ready apps.
+
+Common assignment changes:
+Modify CSS (App.css / index.css) to change colors.
+Replace <App/> text with your name.
+Change counter to increment by 10 instead of 1.
+
+Vite speeds up development and offers a modern alternative to older bundlers like Webpack. Great choice for React apps in both learning and production.
