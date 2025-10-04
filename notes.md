@@ -343,3 +343,52 @@ Reactivity
 React components re-render when props or state change.
 This is the core of React's reactive UI system.
 Changes trigger the render function of the component and its children.
+
+## React router
+
+Routers provide navigation for single-page applications (SPAs) without needing to load new HTML pages.
+They allow you to define paths, manage components for each path, and maintain application state between route changes.
+
+Multi-page apps
+Each route loads a separate HTML page.
+Shared UI like headers and footers must be duplicated or injected server-side.
+
+Single-page apps (SPAs)
+Load a single HTML page and dynamically update the DOM using JavaScript.
+Routers simulate navigation by swapping components based on the URL.
+Preserves state and avoids repeated server requests.
+
+React Router
+React does not include a built-in router.
+The most commonly used router is react-router-dom.
+It is built on top of the core react-router project.
+Do not confuse react-router-dom with react-router when reading documentation.
+
+Key components in react-router-dom
+BrowserRouter: wraps the entire app to enable routing.
+Routes: defines route paths and which component to render.
+Route: maps a path to a specific component.
+NavLink or Link: clickable elements to trigger route changes.
+
+Example component structure
+Page: takes a color prop and renders a styled div.
+App: wraps everything in BrowserRouter. Contains a nav with NavLinks and a main section with Routes and Route components.
+Clicking a NavLink updates the URL and renders the corresponding Page component without reloading the page.
+
+Installation
+To use react-router-dom, install it using npm install react-router-dom.
+Import necessary modules from react-router-dom into your app file.
+Replace your main App structure with BrowserRouter, Routes, and NavLinks.
+
+CSS styling
+Create a styles.css file with layout and link styles.
+Apply classes like app, nav, page, and use a consistent font and spacing.
+Style NavLink elements to change appearance on hover.
+Use className instead of class when writing JSX.
+
+Running the app
+Start the dev server using npm run dev.
+Open the app in your browser.
+Clicking different links will update the browser URL.
+React uses the location API to match routes and display the right components.
+No page reloads occur. Only the DOM is updated.
