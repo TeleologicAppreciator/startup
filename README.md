@@ -44,7 +44,7 @@ I am going to use the required technologies in the following ways.
 
 - **HTML** - Uses correct HTML structure with two pages: one for login, and one for the overview.
 - **CSS** - Responsive application styling that looks good on different screen sizes. Uses good whitespace, color choice, and contrast.
-- **React** - Single-page application with components for login, buying sotcks, leaderboard display, and backend calls. Reacts dynamically to user actions.
+- **React** - Single-page application with components for login, buying stocks, leaderboard display, and backend calls. Reacts dynamically to user actions.
 - **Service** - Backend service with endpoints for:
                 - Login
                 - Buying stocks
