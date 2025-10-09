@@ -1,9 +1,12 @@
 {
   "name": "startup",
   "version": "1.0.0",
-  "description": "[My Notes](notes.md)",
-  "main": "index.js",
+  "description": "React startup project built with Vite",
+  "main": "index.jsx",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,7 +20,13 @@
     "url": "https://github.com/TeleologicAppreciator/startup/issues"
   },
   "homepage": "https://github.com/TeleologicAppreciator/startup#readme",
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.9.4"
+  },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
     "vite": "^7.1.9"
   }
 }
