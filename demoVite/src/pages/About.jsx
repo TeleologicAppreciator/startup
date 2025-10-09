@@ -16,12 +16,10 @@ export default function About() {
       <main>
         <div className="app-description">
           <p>
-            Stock Sprint is a fun, fast-paced stock trading simulation game that challenges
-            players to make smart investments and grow their portfolios in real-time.
-          </p>
-          <p>
-            Compete against others on the leaderboard, learn about market trends, and test
-            your strategy — all in a safe, risk-free environment.
+            Stock Sprint is an app where each day users get fake currency and compete
+            to see who can make the most money off of the stock market in a day. Prices
+            are based off of the stock price at the beggining of the day. You may only
+            buy stocks you cannot sell them once purchased.
           </p>
         </div>
       </main>
