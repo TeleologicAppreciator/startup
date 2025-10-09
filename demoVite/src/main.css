@@ -1,3 +1,12 @@
+@media (max-height: 700px) {
+  .float-img {
+    float: none;
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+  }
+}
+
 html, body, #root {
   height: 100%;
   margin: 0;
@@ -29,15 +38,6 @@ footer {
 
   margin-top: auto;
   width: 100%;
-}
-
-@media (max-height: 700px) {
-  .float-img {
-    float: none;
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-  }
 }
 
 header {
@@ -180,6 +180,11 @@ form button[type="button"]:hover {
   background-color: rgba(0, 0, 0, 0.6);
   background-blend-mode: darken;
   color: white;
+
+  min-height: 100vh;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .leaderboard-page h2 {
