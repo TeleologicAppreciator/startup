@@ -1,3 +1,36 @@
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 70px;
+}
+
+footer {
+  background-color: #1b0a2e;
+  color: white;
+  padding: 10px;
+  min-height: 50px;
+  font-size: clamp(0.9rem, 2.2vw, 1.2rem);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: auto;
+  width: 100%;
+}
+
 @media (max-height: 700px) {
   .float-img {
     float: none;
@@ -12,63 +45,33 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-
   height: 70px;
   padding: 0;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   background-color: #7474b5;
   color: white;
   font-size: 16px;
   z-index: 1000;
-
   box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-  margin: 0;
 }
 
 body {
   font-family: Arial, sans-serif;
   background-color: #d8d1bf;
   color: black;
-
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   margin: 0;
 }
 
-footer {
-  background-color: #1b0a2e;
-  color: white;
-  padding: 10px;
-  min-height: 50px;
-  font-size: clamp(0.9rem, 2.2vw, 1.2rem);
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  margin-top: 70px;
-}
-
 table {
   margin: 20px auto;
   border-collapse: collapse;
-  width:98%;
+  width: 98%;
   table-layout: fixed;
-
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 8px;
 }
@@ -108,7 +111,7 @@ nav a.active {
 }
 
 h1 {
-  color: black
+  color: black;
 }
 
 form {
@@ -168,14 +171,12 @@ form button[type="button"]:hover {
   background-color: #444;
 }
 
-
 .leaderboard-page {
   background-image: url("https://upload.wikimedia.org/wikipedia/commons/6/6a/Digital_money_illustration_20180111.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-
   background-color: rgba(0, 0, 0, 0.6);
   background-blend-mode: darken;
   color: white;
@@ -219,14 +220,14 @@ form button[type="button"]:hover {
   margin-top: 40px;
   margin-bottom: 20px;
   font-size: 1.8rem;
-  color:#6f876d
+  color: #6f876d;
 }
 
 .allocated-funds {
   width: 98%;
   margin: 0 auto 10px auto;
   font-weight: bold;
-  color: #84140c
+  color: #84140c;
 }
 
 .winner-banner {
@@ -238,7 +239,7 @@ form button[type="button"]:hover {
 
 .banner-bar {
   height: 6px;
-  background-color: #20271f; /* match your Welcome color */
+  background-color: #20271f;
 }
 
 .banner-message {
@@ -247,7 +248,7 @@ form button[type="button"]:hover {
   color: #20271f;
   font-weight: bold;
   font-size: 1.1rem;
-  white-space: nowrap; /* useful for future scrolling */
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -291,4 +292,14 @@ section:nth-child(1) {
 
 section:nth-child(2) {
   flex: 3;
+}
+
+#app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#app-shell > main {
+  flex: 1;
 }
