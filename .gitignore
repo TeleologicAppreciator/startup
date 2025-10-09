@@ -1,0 +1,14 @@
+# Ignore dependencies
+node_modules/
+
+# Ignore build outputs
+dist/
+build/
+
+# Ignore old Vite demo
+demoVite/
+
+# OS and editor stuff
+.DS_Store
+*.log
+.vscode/
