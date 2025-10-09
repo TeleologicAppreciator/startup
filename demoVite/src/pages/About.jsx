@@ -14,7 +14,6 @@ export default function About() {
       </header>
 
       <main>
-        <h2>About Stock Sprint</h2>
         <div className="app-description">
           <p>
             Stock Sprint is a fun, fast-paced stock trading simulation game that challenges
