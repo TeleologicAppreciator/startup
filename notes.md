@@ -392,3 +392,6 @@ Open the app in your browser.
 Clicking different links will update the browser URL.
 React uses the location API to match routes and display the right components.
 No page reloads occur. Only the DOM is updated.
+
+## Javascript Arrays
+
