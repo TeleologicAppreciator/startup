@@ -395,3 +395,4 @@ No page reloads occur. Only the DOM is updated.
 
 ## Javascript Arrays
 
+Arrays are zero indexed
