@@ -396,3 +396,21 @@ No page reloads occur. Only the DOM is updated.
 ## Javascript Arrays
 
 Arrays are zero indexed
+
+## Topics from questions for midterm to fully flesh out my notes
+
+Common Tags:
+  html - Root element of an HTML page
+  head - Contains metadata, links, and scripts
+  body - Contains all visible content
+  div - Block-level container for grouping content
+  span - Inline container for styling small pieces of text
+  p - Paragraph
+  h1–h6 - Headings (1 = largest)
+  ol - Ordered list (numbered)
+  ul - Unordered list (bulleted)
+  li - List item
+  a - Hyperlink
+  img - Image
+  link - Connects external files such as CSS
+  script - Includes or embeds JavaScript
