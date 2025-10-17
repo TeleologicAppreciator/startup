@@ -414,3 +414,14 @@ Common Tags:
   img - Image
   link - Connects external files such as CSS
   script - Includes or embeds JavaScript
+
+Linking Resources:
+  <link rel="stylesheet" href="styles.css"> <script src="app.js"></script>
+
+Image with Link:
+  <a href="https://example.com">
+  <img src="image.jpg" alt="Example">
+  </a>
+
+Doctype Declaration:
+  <!DOCTYPE html>
