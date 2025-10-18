@@ -397,7 +397,9 @@ No page reloads occur. Only the DOM is updated.
 
 Arrays are zero indexed
 
-## Topics from questions for midterm to fully flesh out my notes
+## Midterm Summary Notes
+
+HTML BASICS
 
 Common Tags:
   html - Root element of an HTML page
@@ -425,3 +427,75 @@ Image with Link:
 
 Doctype Declaration:
   <!DOCTYPE html>
+
+CSS FUNDAMENTALS
+
+Selectors:
+Type selector: div {} affects all div elements
+Class selector: .card {} affects all elements with class="card"
+ID selector: #title {} affects element with id="title"
+
+Box Model (inside to outside):
+Content → Padding → Border → Margin
+Padding is space inside the border around content.
+Margin is space outside the border around the element.
+
+Display Property Defaults:
+div - block
+span - inline
+img - inline-block
+
+Flexbox Basics:
+display: flex
+justify-content controls horizontal alignment
+align-items controls vertical alignment
+gap adds spacing between items
+Default flex direction is row.
+
+Example Styling:
+div { background-color: red; }
+.green { color: green; }
+
+JAVASCRIPT ESSENTIALS
+
+Variable Declarations:
+let name = "Alice";
+const pi = 3.14;
+var oldWay = true;
+
+Functions:
+function add(a, b) { return a + b; }
+const add = (a, b) => a + b; (arrow function)
+
+Conditionals and Loops:
+if (x > 0) { ... } else { ... }
+for (let i = 0; i < 5; i++) { ... }
+while (condition) { ... }
+switch(value) { case 1: ... break; default: ... }
+
+Objects:
+const person = { name: "Bob", age: 30 };
+person.job = "Engineer"; // add new property
+
+Arrays:
+const nums = [1, 2, 3];
+const doubled = nums.map(x => x * 2); // [2, 4, 6]
+
+DOM Manipulation:
+document.getElementById("title");
+document.querySelector("#title");
+document.querySelectorAll(".class");
+
+Change Style or Text:
+document.getElementById("byu").style.color = "green";
+document.getElementById("animal").textContent = "crow";
+
+Event Listener:
+document.getElementById("btn").addEventListener("click", () => alert("Clicked!"));
+
+Promises:
+Promise.resolve("done").then(console.log); // Output: done
+
+JSON:
+JavaScript Object Notation, used to store and exchange data
+Example: { "name": "Alice", "age": 25 }
