@@ -499,3 +499,47 @@ Promise.resolve("done").then(console.log); // Output: done
 JSON:
 JavaScript Object Notation, used to store and exchange data
 Example: { "name": "Alice", "age": 25 }
+
+DOM (DOCUMENT OBJECT MODEL)
+
+The DOM represents the HTML page as a tree of nodes.
+Each tag, attribute, and text is a node.
+You can modify the DOM using JavaScript to update the page dynamically
+
+CONSOLE COMMANDS
+
+pwd - print working directory
+cd - change directory
+ls - list files and folders
+ls -la - list all files including hidden with details
+mkdir - create directory
+mv - move or rename files
+rm - remove files
+chmod - change file permissions
+man - open manual page
+nano, vim - text editors
+ssh - start remote shell session
+ps - show running processes
+wget - download from the web
+sudo - run command as superuser
+
+NETWORKING AND DOMAINS
+
+Domain Structure Example: banana.fruit.bozo.click
+Top-level domain (TLD): click
+Root domain: bozo.click
+Subdomains: banana.fruit
+
+Common Ports:
+80 - HTTP
+443 - HTTPS
+22 - SSH
+
+DNS Records:
+A record points to an IP address
+CNAME record points to another domain name
+A record cannot point to another A record
+
+HTTPS and Certificates:
+HTTPS requires a valid SSL/TLS certificate
+Used for encrypted, secure communication
