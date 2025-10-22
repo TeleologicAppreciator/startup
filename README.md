@@ -96,7 +96,9 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
 - [ ] **All functionality implemented or mocked out** - I did not complete this part of the deliverable.
-- [ ] **Hooks** - I did not complete this part of the deliverable.
+- [ ] **Hooks** - I converted my Login page to use React useState and useEffect hooks.
+  It now stores the user’s email in localStorage, updates the UI when logged in/out,
+  and conditionally renders the form or logout button based on authentication state.
 
 ## 🚀 Service deliverable
 
