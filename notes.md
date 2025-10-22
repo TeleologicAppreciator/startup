@@ -532,7 +532,7 @@ Subdomains: banana.fruit
 
 Common Ports:
 80 - HTTP
-443 - HTTPS
+443 - HTTPS3
 22 - SSH
 
 DNS Records:
