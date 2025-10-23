@@ -1,26 +1,28 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
-import Login from './pages/login';
-import Account from './pages/account';
-import Leaderboard from './pages/leaderboard';
-import About from './pages/about';
-import { AuthState } from './pages/authState';
-import './main.css';
+import React from "react";
+import { BrowserRouter, Routes, Route, NavLink, Navigate } from "react-router-dom";
+import Login from "./pages/login";
+import Account from "./pages/account";
+import Leaderboard from "./pages/leaderboard";
+import About from "./pages/about";
+import "./main.css";
 
 function App() {
-  const [userName, setUserName] = React.useState('');
-  const [authState, setAuthState] = React.useState(AuthState.Unknown);
+  const [userName, setUserName] = React.useState("");
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
-  // when app loads, check localStorage
   React.useEffect(() => {
-    const storedUser = localStorage.getItem('userName');
-    if (storedUser) {
-      setUserName(storedUser);
-      setAuthState(AuthState.Authenticated);
-    } else {
-      setAuthState(AuthState.Unauthenticated);
+    const savedUser = localStorage.getItem("userEmail");
+    if (savedUser) {
+      setUserName(savedUser);
+      setIsAuthenticated(true);
     }
   }, []);
+
+  function handleAuthChange(user, loggedIn) {
+    console.log("Auth changed:", user, loggedIn);
+    setUserName(user);
+   setIsAuthenticated(loggedIn);
+  }
 
   return (
     <div id="app-shell">
@@ -29,14 +31,25 @@ function App() {
           <h1>Stock Sprint!</h1>
           <nav>
             <ul>
-              <li><NavLink to="/" end>Home</NavLink></li>
-              {authState === AuthState.Authenticated && (
+              <li>
+                <NavLink to="/" end>
+                  Home
+                </NavLink>
+              </li>
+              {isAuthenticated && (
                 <>
-                  <li><NavLink to="/account">Account</NavLink></li>
-                  <li><NavLink to="/leaderboard">Leaderboard</NavLink></li>
+                  <li>
+                    <NavLink to="/account">Account</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/leaderboard">Leaderboard</NavLink>
+                  </li>
                 </>
               )}
-              <li><NavLink to="/about">About</NavLink></li>
+
+              <li>
+                <NavLink to="/about">About</NavLink>
+              </li>
             </ul>
           </nav>
         </header>
@@ -45,19 +58,20 @@ function App() {
           <Routes>
             <Route
               path="/"
+              element={<Login onAuthChange={handleAuthChange} />}
+            />
+            <Route
+              path="/account"
               element={
-                <Login
-                  userName={userName}
-                  authState={authState}
-                  onAuthChange={(user, state) => {
-                    setUserName(user);
-                    setAuthState(state);
-                  }}
-                />
+                isAuthenticated ? <Account userName={userName} /> : <Navigate to="/" replace />
               }
             />
-            <Route path="/account" element={<Account />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route
+              path="/leaderboard"
+              element={
+                isAuthenticated ? <Leaderboard /> : <Navigate to="/" replace />
+              }
+            />
             <Route path="/about" element={<About />} />
           </Routes>
         </main>

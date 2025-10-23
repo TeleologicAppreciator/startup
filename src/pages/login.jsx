@@ -3,17 +3,15 @@ import React from "react";
 export default function Login({ onAuthChange }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [error, setError] = React.useState(null);
 
-  // when the component loads, check if the user is already saved
   React.useEffect(() => {
     const savedUser = localStorage.getItem("userEmail");
     if (savedUser) {
       setEmail(savedUser);
-      setIsAuthenticated(true);
+      if (onAuthChange) onAuthChange(savedUser, true);
     }
-  }, []);
+  }, [onAuthChange]);
 
   function handleLogin(e) {
     e.preventDefault();
@@ -23,7 +21,6 @@ export default function Login({ onAuthChange }) {
     }
 
     localStorage.setItem("userEmail", email);
-    setIsAuthenticated(true);
     setError(null);
     if (onAuthChange) onAuthChange(email, true);
   }
@@ -36,7 +33,6 @@ export default function Login({ onAuthChange }) {
     }
 
     localStorage.setItem("userEmail", email);
-    setIsAuthenticated(true);
     setError(null);
     if (onAuthChange) onAuthChange(email, true);
   }
@@ -45,9 +41,10 @@ export default function Login({ onAuthChange }) {
     localStorage.removeItem("userEmail");
     setEmail("");
     setPassword("");
-    setIsAuthenticated(false);
     if (onAuthChange) onAuthChange("", false);
   }
+
+  const isAuthenticated = !!localStorage.getItem("userEmail");
 
   return (
     <div className="login-container">
@@ -88,8 +85,6 @@ export default function Login({ onAuthChange }) {
         ) : (
           <div className="logged-in-view">
             <h2 className="welcome-title">Welcome, {email}</h2>
-
-            {/* logout button anchored above footer */}
             <div className="logout-bar">
               <button type="button" onClick={handleLogout}>
                 Logout
