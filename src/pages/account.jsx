@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Account() {
+export default function Account({ userName }) {
   const [funds, setFunds] = React.useState(10000);
   const [stocks, setStocks] = React.useState([]);
   const [symbol, setSymbol] = React.useState("");
@@ -74,7 +74,9 @@ export default function Account() {
   return (
     <div>
       <main>
-        <h2 className="welcome-title">Hello, (Account Name)!</h2>
+        <h2 className="welcome-title">
+          Hello, {userName.split("@")[0]}!
+        </h2>
         <p className="unallocated-funds">
           Unallocated funds: ${funds.toFixed(2)}
         </p>
@@ -133,7 +135,6 @@ export default function Account() {
 
         <div className="profit-banner">Yesterday's profit: $10.26</div>
 
-        {/* Winner announcement ticker */}
         <div className="winner-banner">
           <div className="banner-bar top-bar"></div>
           <div className="banner-message">
