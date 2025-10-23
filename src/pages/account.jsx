@@ -26,40 +26,44 @@ export default function Account() {
   const STOCK_PRICE = 100;
 
   function handleBuy(e) {
-    e.preventDefault();
-    if (!symbol) return;
+  e.preventDefault();
 
-    const cost = STOCK_PRICE * quantity;
-    if (funds < cost) {
-      alert("Not enough funds!");
-      return;
-    }
-
-    const existing = stocks.find((s) => s.symbol === symbol.toUpperCase());
-    let updatedStocks;
-    if (existing) {
-      updatedStocks = stocks.map((s) =>
-        s.symbol === symbol.toUpperCase()
-          ? { ...s, owned: s.owned + quantity, totalCost: (s.owned + quantity) * STOCK_PRICE }
-          : s
-      );
-    } else {
-      updatedStocks = [
-        ...stocks,
-        {
-          symbol: symbol.toUpperCase(),
-          owned: quantity,
-          pricePer: STOCK_PRICE,
-          totalCost: quantity * STOCK_PRICE,
-        },
-      ];
-    }
-
-    setFunds((prev) => prev - cost);
-    setStocks(updatedStocks);
-    setSymbol("");
-    setQuantity(1);
+  if (!symbol.trim()) {
+    alert("Please enter a stock symbol before buying.");
+    return;
   }
+
+  const cost = STOCK_PRICE * quantity;
+  if (funds < cost) {
+    alert("Not enough funds!");
+    return;
+  }
+
+  const existing = stocks.find((s) => s.symbol === symbol.toUpperCase());
+  let updatedStocks;
+  if (existing) {
+    updatedStocks = stocks.map((s) =>
+      s.symbol === symbol.toUpperCase()
+        ? { ...s, owned: s.owned + quantity, totalCost: (s.owned + quantity) * STOCK_PRICE }
+        : s
+    );
+  } else {
+    updatedStocks = [
+      ...stocks,
+      {
+        symbol: symbol.toUpperCase(),
+        owned: quantity,
+        pricePer: STOCK_PRICE,
+        totalCost: quantity * STOCK_PRICE,
+      },
+    ];
+  }
+
+  setFunds((prev) => prev - cost);
+  setStocks(updatedStocks);
+  setSymbol("");
+  setQuantity(1);
+}
 
   function increaseQuantity() {
     setQuantity((q) => q + 1);
