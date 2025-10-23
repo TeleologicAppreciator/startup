@@ -93,8 +93,10 @@ export default function Account() {
           </div>
           <p>
             Price: ${STOCK_PRICE.toFixed(2)} × {quantity}
-            <button type="button" onClick={increaseQuantity}>+</button>
-            <button type="button" onClick={decreaseQuantity}>-</button>
+            <span className="qty-buttons">
+              <button type="button" onClick={increaseQuantity}>+</button>
+              <button type="button" onClick={decreaseQuantity}>-</button>
+            </span>
           </p>
         </form>
 
