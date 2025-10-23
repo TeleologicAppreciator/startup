@@ -33,6 +33,37 @@ export default function Leaderboard() {
     }
   }, []);
 
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      const updatedDaily = [
+        { name: "도윤 이", profit: +(Math.random() * 50).toFixed(2) },
+        { name: "Annie James", profit: +(Math.random() * 50).toFixed(2) },
+        { name: "Gunter Spears", profit: +(Math.random() * 50).toFixed(2) },
+      ]
+        .sort((a, b) => b.profit - a.profit);
+
+      setDailyLeaders(updatedDaily);
+      localStorage.setItem("dailyLeaders", JSON.stringify(updatedDaily));
+
+      const winner = updatedDaily[0];
+      const newAllTime = [
+        ...allTimeLeaders,
+        {
+          name: winner.name,
+          score: winner.profit,
+          date: new Date().toLocaleDateString(),
+        },
+      ]
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 10);
+
+      setAllTimeLeaders(newAllTime);
+      localStorage.setItem("allTimeLeaders", JSON.stringify(newAllTime));
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [allTimeLeaders]);
+
   return (
     <div className="leaderboard-page">
       <main>
