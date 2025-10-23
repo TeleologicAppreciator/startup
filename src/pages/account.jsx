@@ -39,9 +39,11 @@ export default function Account() {
 
         <div className="winner-banner">
           <div className="banner-bar top-bar"></div>
-          <div className="banner-message" id="winner-announcement">
-            Yesterday’s winner will be announced here.
-          </div>
+            <div className="banner-message" id="winner-announcement">
+              <div className="scroll-text">
+                Yesterday’s winner will be announced here.
+              </div>
+            </div>
           <div className="banner-bar bottom-bar"></div>
         </div>
       </main>

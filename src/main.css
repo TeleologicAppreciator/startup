@@ -202,6 +202,36 @@ form button[type="button"]:hover {
   background-color: #5c5ca9;
 }
 
+.scroll-text {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scroll-left-to-right 15s linear infinite;
+}
+
+.banner-message {
+  overflow: hidden;
+  position: relative;
+  background-color: #f4f4f4;
+  color: #20271f;
+  font-weight: bold;
+  font-size: 1.1rem;
+  white-space: nowrap;
+  padding: 15px;
+}
+
+@keyframes scroll-left-to-right {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.scroll-text:hover {
+  animation-play-state: paused;
+}
+
 .leaderboard-page {
   background-image: url("https://upload.wikimedia.org/wikipedia/commons/6/6a/Digital_money_illustration_20180111.jpg");
   background-size: cover;
