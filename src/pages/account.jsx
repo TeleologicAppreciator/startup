@@ -5,18 +5,28 @@ export default function Account() {
   const [stocks, setStocks] = React.useState([]);
   const [symbol, setSymbol] = React.useState("");
   const [quantity, setQuantity] = React.useState(1);
+  const [yesterdayProfit, setYesterdayProfit] = React.useState(0);
 
   const userEmail = localStorage.getItem("userEmail");
 
   const fundsKey = `funds_${userEmail || "guest"}`;
   const stocksKey = `stocks_${userEmail || "guest"}`;
+  const profitKey = `profit_${userEmail || "guest"}`;
 
   React.useEffect(() => {
     const savedFunds = localStorage.getItem(fundsKey);
     const savedStocks = localStorage.getItem(stocksKey);
+    const savedProfit = localStorage.getItem(profitKey);
+
     if (savedFunds) setFunds(parseFloat(savedFunds));
     if (savedStocks) setStocks(JSON.parse(savedStocks));
-  }, [fundsKey, stocksKey]);
+    if (savedProfit) setYesterdayProfit(parseFloat(savedProfit));
+    else {
+      const randomProfit = +(Math.random() * 50 - 10).toFixed(2);
+      setYesterdayProfit(randomProfit);
+      localStorage.setItem(profitKey, randomProfit.toString());
+    }
+  }, [fundsKey, stocksKey, profitKey]);
 
   React.useEffect(() => {
     localStorage.setItem(fundsKey, funds.toString());
@@ -26,44 +36,44 @@ export default function Account() {
   const STOCK_PRICE = 100;
 
   function handleBuy(e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!symbol.trim()) {
-    alert("Please enter a stock symbol before buying.");
-    return;
+    if (!symbol.trim()) {
+      alert("Please enter a stock symbol before buying.");
+      return;
+    }
+
+    const cost = STOCK_PRICE * quantity;
+    if (funds < cost) {
+      alert("Not enough funds!");
+      return;
+    }
+
+    const existing = stocks.find((s) => s.symbol === symbol.toUpperCase());
+    let updatedStocks;
+    if (existing) {
+      updatedStocks = stocks.map((s) =>
+        s.symbol === symbol.toUpperCase()
+          ? { ...s, owned: s.owned + quantity, totalCost: (s.owned + quantity) * STOCK_PRICE }
+          : s
+      );
+    } else {
+      updatedStocks = [
+        ...stocks,
+        {
+          symbol: symbol.toUpperCase(),
+          owned: quantity,
+          pricePer: STOCK_PRICE,
+          totalCost: quantity * STOCK_PRICE,
+        },
+      ];
+    }
+
+    setFunds((prev) => prev - cost);
+    setStocks(updatedStocks);
+    setSymbol("");
+    setQuantity(1);
   }
-
-  const cost = STOCK_PRICE * quantity;
-  if (funds < cost) {
-    alert("Not enough funds!");
-    return;
-  }
-
-  const existing = stocks.find((s) => s.symbol === symbol.toUpperCase());
-  let updatedStocks;
-  if (existing) {
-    updatedStocks = stocks.map((s) =>
-      s.symbol === symbol.toUpperCase()
-        ? { ...s, owned: s.owned + quantity, totalCost: (s.owned + quantity) * STOCK_PRICE }
-        : s
-    );
-  } else {
-    updatedStocks = [
-      ...stocks,
-      {
-        symbol: symbol.toUpperCase(),
-        owned: quantity,
-        pricePer: STOCK_PRICE,
-        totalCost: quantity * STOCK_PRICE,
-      },
-    ];
-  }
-
-  setFunds((prev) => prev - cost);
-  setStocks(updatedStocks);
-  setSymbol("");
-  setQuantity(1);
-}
 
   function increaseQuantity() {
     setQuantity((q) => q + 1);
@@ -129,7 +139,9 @@ export default function Account() {
           </tbody>
         </table>
 
-        <div className="profit-banner">Yesterday's profit: $10.26</div>
+        <div className="profit-banner">
+          Yesterday's profit: ${yesterdayProfit.toFixed(2)}
+        </div>
 
         <div className="winner-banner">
           <div className="banner-bar top-bar"></div>
