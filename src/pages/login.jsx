@@ -6,6 +6,7 @@ export default function Login({ onAuthChange }) {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [error, setError] = React.useState(null);
 
+  // when the component loads, check if the user is already saved
   React.useEffect(() => {
     const savedUser = localStorage.getItem("userEmail");
     if (savedUser) {
@@ -51,41 +52,49 @@ export default function Login({ onAuthChange }) {
   return (
     <div className="login-container">
       <main>
-        <h1 className="welcome-title">
-          {isAuthenticated ? `Welcome, ${email}` : "Welcome"}
-        </h1>
-
         {!isAuthenticated ? (
-          <form onSubmit={handleLogin}>
-            <div>
-              <input
-                type="text"
-                name="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div>
-              <input
-                type="password"
-                name="password"
-                placeholder="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            {error && <p className="error-text">{error}</p>}
-            <button type="submit">Login</button>
-            <button type="button" onClick={handleCreate}>
-              Create
-            </button>
-          </form>
+          <>
+            <h1 className="welcome-title">Welcome</h1>
+
+            <form onSubmit={handleLogin}>
+              <div>
+                <input
+                  type="text"
+                  name="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+
+              {error && <p className="error-text">{error}</p>}
+
+              <button type="submit">Login</button>
+              <button type="button" onClick={handleCreate}>
+                Create
+              </button>
+            </form>
+          </>
         ) : (
-          <div>
-            <button type="button" onClick={handleLogout}>
-              Logout
-            </button>
+          <div className="logged-in-view">
+            <h2 className="welcome-title">Welcome, {email}</h2>
+
+            {/* logout button anchored above footer */}
+            <div className="logout-bar">
+              <button type="button" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
           </div>
         )}
       </main>
