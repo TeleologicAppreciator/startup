@@ -1,22 +1,27 @@
 import React from "react";
 
-export default function Account({ userName }) {
+export default function Account() {
   const [funds, setFunds] = React.useState(10000);
   const [stocks, setStocks] = React.useState([]);
   const [symbol, setSymbol] = React.useState("");
   const [quantity, setQuantity] = React.useState(1);
 
-  React.useEffect(() => {
-    const savedFunds = localStorage.getItem("funds");
-    const savedStocks = localStorage.getItem("stocks");
-    if (savedFunds) setFunds(parseFloat(savedFunds));
-    if (savedStocks) setStocks(JSON.parse(savedStocks));
-  }, []);
+  const userEmail = localStorage.getItem("userEmail");
+
+  const fundsKey = `funds_${userEmail || "guest"}`;
+  const stocksKey = `stocks_${userEmail || "guest"}`;
 
   React.useEffect(() => {
-    localStorage.setItem("funds", funds.toString());
-    localStorage.setItem("stocks", JSON.stringify(stocks));
-  }, [funds, stocks]);
+    const savedFunds = localStorage.getItem(fundsKey);
+    const savedStocks = localStorage.getItem(stocksKey);
+    if (savedFunds) setFunds(parseFloat(savedFunds));
+    if (savedStocks) setStocks(JSON.parse(savedStocks));
+  }, [fundsKey, stocksKey]);
+
+  React.useEffect(() => {
+    localStorage.setItem(fundsKey, funds.toString());
+    localStorage.setItem(stocksKey, JSON.stringify(stocks));
+  }, [funds, stocks, fundsKey, stocksKey]);
 
   const STOCK_PRICE = 100;
 
@@ -25,7 +30,6 @@ export default function Account({ userName }) {
     if (!symbol) return;
 
     const cost = STOCK_PRICE * quantity;
-
     if (funds < cost) {
       alert("Not enough funds!");
       return;
@@ -36,11 +40,7 @@ export default function Account({ userName }) {
     if (existing) {
       updatedStocks = stocks.map((s) =>
         s.symbol === symbol.toUpperCase()
-          ? {
-              ...s,
-              owned: s.owned + quantity,
-              totalCost: (s.owned + quantity) * STOCK_PRICE,
-            }
+          ? { ...s, owned: s.owned + quantity, totalCost: (s.owned + quantity) * STOCK_PRICE }
           : s
       );
     } else {
@@ -74,12 +74,8 @@ export default function Account({ userName }) {
   return (
     <div>
       <main>
-        <h2 className="welcome-title">
-          Hello, {userName.split("@")[0]}!
-        </h2>
-        <p className="unallocated-funds">
-          Unallocated funds: ${funds.toFixed(2)}
-        </p>
+        <h2 className="welcome-title">Hello, {userEmail || "Trader"}!</h2>
+        <p className="unallocated-funds">Unallocated funds: ${funds.toFixed(2)}</p>
 
         <form onSubmit={handleBuy}>
           <div>
@@ -92,19 +88,13 @@ export default function Account({ userName }) {
             <button type="submit">Buy</button>
           </div>
           <p>
-            Price: ${STOCK_PRICE.toFixed(2)} × {quantity}{" "}
-            <button type="button" onClick={increaseQuantity}>
-              +
-            </button>{" "}
-            <button type="button" onClick={decreaseQuantity}>
-              -
-            </button>
+            Price: ${STOCK_PRICE.toFixed(2)} × {quantity}
+            <button type="button" onClick={increaseQuantity}>+</button>
+            <button type="button" onClick={decreaseQuantity}>-</button>
           </p>
         </form>
 
-        <p className="allocated-funds">
-          Allocated funds: ${totalAllocated.toFixed(2)}
-        </p>
+        <p className="allocated-funds">Allocated funds: ${totalAllocated.toFixed(2)}</p>
 
         <table>
           <thead>
@@ -138,10 +128,7 @@ export default function Account({ userName }) {
         <div className="winner-banner">
           <div className="banner-bar top-bar"></div>
           <div className="banner-message">
-            <div
-              className="scroll-container"
-              aria-label="Scrolling winner announcement"
-            >
+            <div className="scroll-container" aria-label="Scrolling winner announcement">
               <div
                 className="scroll-text"
                 data-text="Yesterday’s winner will be announced here."
