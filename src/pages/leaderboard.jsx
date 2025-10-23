@@ -4,56 +4,66 @@ export default function Leaderboard() {
   const [dailyLeaders, setDailyLeaders] = React.useState([]);
   const [allTimeLeaders, setAllTimeLeaders] = React.useState([]);
 
-  React.useEffect(() => {
-    const dailyText = localStorage.getItem("dailyLeaders");
-    const allTimeText = localStorage.getItem("allTimeLeaders");
+  function formatDate(date) {
+    return new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
 
-    if (dailyText) {
-      setDailyLeaders(JSON.parse(dailyText));
+  const mockData = {
+    daily: [
+      { name: "도윤 이", profit: 34.23 },
+      { name: "Annie James", profit: 29.3 },
+      { name: "Gunter Spears", profit: 7.0 },
+    ],
+    allTime: [
+      { name: "John Smith", score: 1000, date: "2021-05-20T00:00:00Z" },
+      { name: "Alfred Him", score: 35, date: "2021-06-02T00:00:00Z" },
+      { name: "Reece Easpuffs", score: 34.24, date: "2020-07-03T00:00:00Z" },
+    ],
+  };
+
+  React.useEffect(() => {
+    const storedDaily = localStorage.getItem("dailyLeaders");
+    const storedAllTime = localStorage.getItem("allTimeLeaders");
+
+    if (storedDaily) {
+      setDailyLeaders(JSON.parse(storedDaily));
     } else {
-      const mockDaily = [
-        { name: "도윤 이", profit: 34.23 },
-        { name: "Annie James", profit: 29.3 },
-        { name: "Gunter Spears", profit: 7.0 },
-      ];
-      setDailyLeaders(mockDaily);
-      localStorage.setItem("dailyLeaders", JSON.stringify(mockDaily));
+      setDailyLeaders(mockData.daily);
+      localStorage.setItem("dailyLeaders", JSON.stringify(mockData.daily));
     }
 
-    if (allTimeText) {
-      setAllTimeLeaders(JSON.parse(allTimeText));
+    if (storedAllTime) {
+      setAllTimeLeaders(JSON.parse(storedAllTime));
     } else {
-      const mockAllTime = [
-        { name: "John Smith", score: 1000, date: "May 20, 2021" },
-        { name: "Alfred Him", score: 35, date: "June 2, 2021" },
-        { name: "Reece Easpuffs", score: 34.24, date: "July 3, 2020" },
-      ];
-      setAllTimeLeaders(mockAllTime);
-      localStorage.setItem("allTimeLeaders", JSON.stringify(mockAllTime));
+      setAllTimeLeaders(mockData.allTime);
+      localStorage.setItem("allTimeLeaders", JSON.stringify(mockData.allTime));
     }
   }, []);
 
   React.useEffect(() => {
     const interval = setInterval(() => {
-      const updatedDaily = [
-        { name: "도윤 이", profit: +(Math.random() * 50).toFixed(2) },
-        { name: "Annie James", profit: +(Math.random() * 50).toFixed(2) },
-        { name: "Gunter Spears", profit: +(Math.random() * 50).toFixed(2) },
-      ]
+      const updatedDaily = mockData.daily
+        .map((entry) => ({
+          ...entry,
+          profit: +(Math.random() * 50).toFixed(2),
+        }))
         .sort((a, b) => b.profit - a.profit);
 
       setDailyLeaders(updatedDaily);
       localStorage.setItem("dailyLeaders", JSON.stringify(updatedDaily));
 
       const winner = updatedDaily[0];
-      const newAllTime = [
-        ...allTimeLeaders,
-        {
-          name: winner.name,
-          score: winner.profit,
-          date: new Date().toLocaleDateString(),
-        },
-      ]
+      const newEntry = {
+        name: winner.name,
+        score: winner.profit,
+        date: new Date().toISOString(),
+      };
+
+      const newAllTime = [...allTimeLeaders, newEntry]
         .sort((a, b) => b.score - a.score)
         .slice(0, 10);
 
@@ -69,7 +79,7 @@ export default function Leaderboard() {
       <main>
         <section>
           <h2><span>Daily Leaderboard</span></h2>
-          <p>{new Date().toLocaleDateString()}</p>
+          <p>{formatDate(new Date())}</p>
           <table>
             <thead>
               <tr>
@@ -112,7 +122,7 @@ export default function Leaderboard() {
                     <td>{index + 1}</td>
                     <td>{entry.name}</td>
                     <td>${entry.score.toFixed(2)}</td>
-                    <td>{entry.date}</td>
+                    <td>{formatDate(entry.date)}</td>
                   </tr>
                 ))
               ) : (
