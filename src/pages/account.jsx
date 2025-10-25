@@ -33,7 +33,7 @@ export default function Account() {
     localStorage.setItem(stocksKey, JSON.stringify(stocks));
   }, [funds, stocks, fundsKey, stocksKey]);
 
-  const STOCK_PRICE = 100;
+  const [stockPrice, setStockPrice] = React.useState(null);
 
   function handleBuy(e) {
     e.preventDefault();
