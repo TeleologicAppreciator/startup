@@ -6,6 +6,7 @@ export default function Account() {
   const [symbol, setSymbol] = React.useState("");
   const [quantity, setQuantity] = React.useState(1);
   const [yesterdayProfit, setYesterdayProfit] = React.useState(0);
+  const [stockPrice, setStockPrice] = React.useState(null);
 
   const userEmail = localStorage.getItem("userEmail");
 
@@ -33,7 +34,30 @@ export default function Account() {
     localStorage.setItem(stocksKey, JSON.stringify(stocks));
   }, [funds, stocks, fundsKey, stocksKey]);
 
-  const [stockPrice, setStockPrice] = React.useState(null);
+  React.useEffect(() => {
+    async function fetchStockPrice(symbol) {
+      if (!symbol.trim()) {
+        setStockPrice(null);
+        return;
+      }
+      try {
+        const response = await fetch(
+          `https://financialmodelingprep.com/api/v3/quote-short/${symbol.toUpperCase()}?apikey=demo`
+        );
+        const data = await response.json();
+        if (data && data.length > 0) {
+          setStockPrice(data[0].price);
+        } else {
+          setStockPrice(null);
+        }
+      } catch (err) {
+        console.error("Error fetching stock price:", err);
+        setStockPrice(null);
+      }
+    }
+
+    fetchStockPrice(symbol);
+  }, [symbol]);
 
   function handleBuy(e) {
     e.preventDefault();
@@ -43,7 +67,9 @@ export default function Account() {
       return;
     }
 
-    const cost = STOCK_PRICE * quantity;
+    const priceToUse = stockPrice || 100; // fallback to 100 if fetch fails
+    const cost = priceToUse * quantity;
+
     if (funds < cost) {
       alert("Not enough funds!");
       return;
@@ -51,10 +77,16 @@ export default function Account() {
 
     const existing = stocks.find((s) => s.symbol === symbol.toUpperCase());
     let updatedStocks;
+
     if (existing) {
       updatedStocks = stocks.map((s) =>
         s.symbol === symbol.toUpperCase()
-          ? { ...s, owned: s.owned + quantity, totalCost: (s.owned + quantity) * STOCK_PRICE }
+          ? {
+              ...s,
+              owned: s.owned + quantity,
+              totalCost: (s.owned + quantity) * priceToUse,
+              pricePer: priceToUse,
+            }
           : s
       );
     } else {
@@ -63,8 +95,8 @@ export default function Account() {
         {
           symbol: symbol.toUpperCase(),
           owned: quantity,
-          pricePer: STOCK_PRICE,
-          totalCost: quantity * STOCK_PRICE,
+          pricePer: priceToUse,
+          totalCost: quantity * priceToUse,
         },
       ];
     }
@@ -89,7 +121,9 @@ export default function Account() {
     <div>
       <main>
         <h2 className="welcome-title">Hello, {userEmail || "Trader"}!</h2>
-        <p className="unallocated-funds">Unallocated funds: ${funds.toFixed(2)}</p>
+        <p className="unallocated-funds">
+          Unallocated funds: ${funds.toFixed(2)}
+        </p>
 
         <form onSubmit={handleBuy}>
           <div>
@@ -101,16 +135,29 @@ export default function Account() {
             />
             <button type="submit">Buy</button>
           </div>
+
           <p>
-            Price: ${STOCK_PRICE.toFixed(2)} × {quantity}
+            Price:{" "}
+            {stockPrice
+              ? `$${stockPrice.toFixed(2)}`
+              : symbol
+              ? "Fetching..."
+              : "—"}{" "}
+            × {quantity}
             <span className="qty-buttons">
-              <button type="button" onClick={increaseQuantity}>+</button>
-              <button type="button" onClick={decreaseQuantity}>-</button>
+              <button type="button" onClick={increaseQuantity}>
+                +
+              </button>
+              <button type="button" onClick={decreaseQuantity}>
+                -
+              </button>
             </span>
           </p>
         </form>
 
-        <p className="allocated-funds">Allocated funds: ${totalAllocated.toFixed(2)}</p>
+        <p className="allocated-funds">
+          Allocated funds: ${totalAllocated.toFixed(2)}
+        </p>
 
         <table>
           <thead>
@@ -146,7 +193,10 @@ export default function Account() {
         <div className="winner-banner">
           <div className="banner-bar top-bar"></div>
           <div className="banner-message">
-            <div className="scroll-container" aria-label="Scrolling winner announcement">
+            <div
+              className="scroll-container"
+              aria-label="Scrolling winner announcement"
+            >
               <div
                 className="scroll-text"
                 data-text="Yesterday’s winner will be announced here."
