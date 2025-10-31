@@ -14,6 +14,9 @@ export default function Account() {
   const stocksKey = `stocks_${userEmail || "guest"}`;
   const profitKey = `profit_${userEmail || "guest"}`;
 
+  const formatCurrency = (n) =>
+    n.toLocaleString("en-US", { style: "currency", currency: "USD" });
+
   React.useEffect(() => {
     const savedFunds = localStorage.getItem(fundsKey);
     const savedStocks = localStorage.getItem(stocksKey);
@@ -67,7 +70,7 @@ export default function Account() {
       return;
     }
 
-    const priceToUse = stockPrice || 100; // fallback to 100 if fetch fails
+    const priceToUse = stockPrice || 100;
     const cost = priceToUse * quantity;
 
     if (funds < cost) {
@@ -119,10 +122,15 @@ export default function Account() {
 
   return (
     <div>
+      <header>
+        <h1>🏁 StockSprint</h1>
+        <p className="date-time">{new Date().toLocaleString()}</p>
+      </header>
+
       <main>
         <h2 className="welcome-title">Hello, {userEmail || "Trader"}!</h2>
         <p className="unallocated-funds">
-          Unallocated funds: ${funds.toFixed(2)}
+          Unallocated funds: {formatCurrency(funds)}
         </p>
 
         <form onSubmit={handleBuy}>
@@ -139,7 +147,7 @@ export default function Account() {
           <p>
             Price:{" "}
             {stockPrice
-              ? `$${stockPrice.toFixed(2)}`
+              ? formatCurrency(stockPrice)
               : symbol
               ? "Fetching..."
               : "—"}{" "}
@@ -156,7 +164,7 @@ export default function Account() {
         </form>
 
         <p className="allocated-funds">
-          Allocated funds: ${totalAllocated.toFixed(2)}
+          Allocated funds: {formatCurrency(totalAllocated)}
         </p>
 
         <table>
@@ -173,9 +181,9 @@ export default function Account() {
               stocks.map((s, i) => (
                 <tr key={i}>
                   <td>{s.symbol}</td>
-                  <td>${s.totalCost.toFixed(2)}</td>
+                  <td>{formatCurrency(s.totalCost)}</td>
                   <td>{s.owned}</td>
-                  <td>${s.pricePer.toFixed(2)}</td>
+                  <td>{formatCurrency(s.pricePer)}</td>
                 </tr>
               ))
             ) : (
@@ -187,7 +195,7 @@ export default function Account() {
         </table>
 
         <div className="profit-banner">
-          Yesterday's profit: ${yesterdayProfit.toFixed(2)}
+          Yesterday's profit: {formatCurrency(yesterdayProfit)}
         </div>
 
         <div className="winner-banner">
