@@ -10,8 +10,40 @@ const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
 app.use(express.json());
 app.use(cookieParser());
-
 app.use(express.static("public"));
+
+let openingPrices = {};
+let closingPrices = {};
+
+async function fetchOpeningPrices() {
+  const symbols = ["AAPL", "TSLA", "AMZN"];
+  const response = await fetch(
+    `https://financialmodelingprep.com/api/v3/quote-short/${symbols.join(",")}?apikey=demo`
+  );
+  const data = await response.json();
+
+  openingPrices = {};
+  data.forEach((item) => {
+    openingPrices[item.symbol] = item.price;
+  });
+
+  console.log("Opening prices fetched:", openingPrices);
+}
+
+async function fetchClosingPrices() {
+  const symbols = Object.keys(openingPrices);
+  const response = await fetch(
+    `https://financialmodelingprep.com/api/v3/quote-short/${symbols.join(",")}?apikey=demo`
+  );
+  const data = await response.json();
+
+  closingPrices = {};
+  data.forEach((item) => {
+    closingPrices[item.symbol] = item.price;
+  });
+
+  console.log("Closing prices fetched:", closingPrices);
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,6 +61,24 @@ const leaderboard = [
 // --- Routes ---
 app.get("/api/test", (req, res) => {
   res.send({ message: "StockSprint backend is running!" });
+});
+
+app.get("/api/opening-prices", (req, res) => {
+  res.send(openingPrices);
+});
+
+app.get("/api/closing-prices", (req, res) => {
+  res.send(closingPrices);
+});
+
+app.post("/api/fetch-opening", async (req, res) => {
+  await fetchOpeningPrices();
+  res.send({ msg: "Opening prices updated", data: openingPrices });
+});
+
+app.post("/api/fetch-closing", async (req, res) => {
+  await fetchClosingPrices();
+  res.send({ msg: "Closing prices updated", data: closingPrices });
 });
 
 app.post("/api/register", async (req, res) => {
