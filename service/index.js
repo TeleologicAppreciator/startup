@@ -16,40 +16,67 @@ app.use(express.static("public"));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// --- In-memory data ---
 const users = {};
 const playerData = {};
 
 let openingPrices = {};
 let closingPrices = {};
 
+// --- Fetch stock data ---
 async function fetchOpeningPrices() {
   const symbols = ["AAPL", "TSLA", "AMZN"];
-  const response = await fetch(
-    `https://financialmodelingprep.com/api/v3/quote-short/${symbols.join(",")}?apikey=demo`
-  );
-  const data = await response.json();
+  const apiKey = "4072f6f3409f4392a2cdeaa60bc5b4f8";
 
   openingPrices = {};
-  data.forEach((item) => (openingPrices[item.symbol] = item.price));
+
+  for (const symbol of symbols) {
+    try {
+      const response = await fetch(
+        `https://api.twelvedata.com/quote?symbol=${symbol}&apikey=${apiKey}`
+      );
+      const data = await response.json();
+
+      if (data && data.symbol && data.close) {
+        openingPrices[data.symbol] = parseFloat(data.close);
+      } else {
+        console.error(`No valid close price for ${symbol}:`, data);
+      }
+    } catch (err) {
+      console.error(`Error fetching ${symbol}:`, err);
+    }
+  }
 
   console.log("Opening prices fetched:", openingPrices);
 }
 
 async function fetchClosingPrices() {
   const symbols = Object.keys(openingPrices);
-  if (symbols.length === 0) return;
-
-  const response = await fetch(
-    `https://financialmodelingprep.com/api/v3/quote-short/${symbols.join(",")}?apikey=demo`
-  );
-  const data = await response.json();
+  const apiKey = "4072f6f3409f4392a2cdeaa60bc5b4f8";
 
   closingPrices = {};
-  data.forEach((item) => (closingPrices[item.symbol] = item.price));
+
+  for (const symbol of symbols) {
+    try {
+      const response = await fetch(
+        `https://api.twelvedata.com/quote?symbol=${symbol}&apikey=${apiKey}`
+      );
+      const data = await response.json();
+
+      if (data && data.symbol && data.close) {
+        closingPrices[data.symbol] = parseFloat(data.close);
+      } else {
+        console.error(`No valid close price for ${symbol}:`, data);
+      }
+    } catch (err) {
+      console.error(`Error fetching ${symbol}:`, err);
+    }
+  }
 
   console.log("Closing prices fetched:", closingPrices);
 }
 
+// --- Middleware ---
 function requireAuth(req, res, next) {
   const token = req.cookies.token;
   const user = Object.values(users).find((u) => u.token === token);
@@ -58,7 +85,7 @@ function requireAuth(req, res, next) {
   next();
 }
 
-
+// --- Auth routes ---
 app.post("/api/register", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
@@ -93,7 +120,7 @@ app.post("/api/logout", (req, res) => {
   res.send({ msg: "Logged out" });
 });
 
-
+// --- Stock endpoints ---
 app.post("/api/fetch-opening", async (req, res) => {
   await fetchOpeningPrices();
   res.send({ msg: "Opening prices updated", data: openingPrices });
@@ -112,7 +139,7 @@ app.get("/api/closing-prices", (req, res) => {
   res.send(closingPrices);
 });
 
-
+// --- Trading logic ---
 app.post("/api/buy", requireAuth, (req, res) => {
   const email = Object.keys(users).find((e) => users[e].token === req.cookies.token);
   const { symbol, quantity, price } = req.body;
@@ -171,7 +198,8 @@ app.get("/api/leaderboard", (req, res) => {
   res.send(leaderboard);
 });
 
-app.post('/api/update-profits', (req, res) => {
+// --- Daily cycle / summary endpoints ---
+app.post("/api/update-profits", (req, res) => {
   Object.keys(playerData).forEach((email) => {
     const player = playerData[email];
     const randomProfit = +(Math.random() * 500 - 250).toFixed(2);
@@ -182,7 +210,7 @@ app.post('/api/update-profits', (req, res) => {
   res.send({ msg: "Random profits updated", players: playerData });
 });
 
-app.post('/api/end-day', (req, res) => {
+app.post("/api/end-day", (req, res) => {
   Object.keys(playerData).forEach((email) => {
     playerData[email].holdings = [];
     playerData[email].funds = 10000;
@@ -192,15 +220,8 @@ app.post('/api/end-day', (req, res) => {
   res.send({ msg: "Trading day ended. All holdings reset.", players: playerData });
 });
 
-app.get('/api/summary', (req, res) => {
-  const token = req.cookies.token;
-  const userEntry = Object.entries(users).find(([_, u]) => u.token === token);
-
-  if (!userEntry) {
-    return res.status(401).send({ msg: "Unauthorized" });
-  }
-
-  const email = userEntry[0];
+app.get("/api/summary", requireAuth, (req, res) => {
+  const email = Object.keys(users).find((e) => users[e].token === req.cookies.token);
   const player = playerData[email] || { funds: 10000, profit: 0, holdings: [] };
 
   const sorted = Object.entries(playerData)
@@ -224,8 +245,9 @@ app.get("/api/secure", requireAuth, (req, res) => {
   res.send({ msg: "You accessed a protected endpoint!" });
 });
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/index.html"));
+// --- Fallback for React frontend ---
+app.use((req, res) => {
+  res.status(404).send({ msg: "Not found" });
 });
 
 app.listen(port, () => {
