@@ -2,6 +2,8 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
@@ -10,6 +12,13 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(express.static("public"));
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/index.html"));
+});
 
 const users = {};
 const leaderboard = [
