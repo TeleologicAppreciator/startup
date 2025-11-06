@@ -1,41 +1,36 @@
 import React from "react";
 
 export default function Account() {
-  const [funds, setFunds] = React.useState(10000);
+  const [funds, setFunds] = React.useState(0);
   const [stocks, setStocks] = React.useState([]);
   const [symbol, setSymbol] = React.useState("");
   const [quantity, setQuantity] = React.useState(1);
-  const [yesterdayProfit, setYesterdayProfit] = React.useState(0);
   const [stockPrice, setStockPrice] = React.useState(null);
+  const [yesterdayProfit, setYesterdayProfit] = React.useState(0);
+  const [message, setMessage] = React.useState("");
 
   const userEmail = localStorage.getItem("userEmail");
-
-  const fundsKey = `funds_${userEmail || "guest"}`;
-  const stocksKey = `stocks_${userEmail || "guest"}`;
-  const profitKey = `profit_${userEmail || "guest"}`;
 
   const formatCurrency = (n) =>
     n.toLocaleString("en-US", { style: "currency", currency: "USD" });
 
   React.useEffect(() => {
-    const savedFunds = localStorage.getItem(fundsKey);
-    const savedStocks = localStorage.getItem(stocksKey);
-    const savedProfit = localStorage.getItem(profitKey);
-
-    if (savedFunds) setFunds(parseFloat(savedFunds));
-    if (savedStocks) setStocks(JSON.parse(savedStocks));
-    if (savedProfit) setYesterdayProfit(parseFloat(savedProfit));
-    else {
-      const randomProfit = +(Math.random() * 50 - 10).toFixed(2);
-      setYesterdayProfit(randomProfit);
-      localStorage.setItem(profitKey, randomProfit.toString());
+    async function fetchPortfolio() {
+      try {
+        const response = await fetch("/api/portfolio");
+        if (response.status === 401) {
+          setMessage("Please log in to view your portfolio.");
+          return;
+        }
+        const data = await response.json();
+        setFunds(data.funds);
+        setStocks(data.holdings || []);
+      } catch (err) {
+        console.error("Error fetching portfolio:", err);
+      }
     }
-  }, [fundsKey, stocksKey, profitKey]);
-
-  React.useEffect(() => {
-    localStorage.setItem(fundsKey, funds.toString());
-    localStorage.setItem(stocksKey, JSON.stringify(stocks));
-  }, [funds, stocks, fundsKey, stocksKey]);
+    fetchPortfolio();
+  }, []);
 
   React.useEffect(() => {
     async function fetchStockPrice(symbol) {
@@ -62,7 +57,7 @@ export default function Account() {
     fetchStockPrice(symbol);
   }, [symbol]);
 
-  function handleBuy(e) {
+  async function handleBuy(e) {
     e.preventDefault();
 
     if (!symbol.trim()) {
@@ -70,44 +65,37 @@ export default function Account() {
       return;
     }
 
-    const priceToUse = stockPrice || 100;
-    const cost = priceToUse * quantity;
-
-    if (funds < cost) {
-      alert("Not enough funds!");
+    if (!stockPrice) {
+      alert("Could not fetch stock price.");
       return;
     }
 
-    const existing = stocks.find((s) => s.symbol === symbol.toUpperCase());
-    let updatedStocks;
-
-    if (existing) {
-      updatedStocks = stocks.map((s) =>
-        s.symbol === symbol.toUpperCase()
-          ? {
-              ...s,
-              owned: s.owned + quantity,
-              totalCost: (s.owned + quantity) * priceToUse,
-              pricePer: priceToUse,
-            }
-          : s
-      );
-    } else {
-      updatedStocks = [
-        ...stocks,
-        {
+    try {
+      const response = await fetch("/api/buy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           symbol: symbol.toUpperCase(),
-          owned: quantity,
-          pricePer: priceToUse,
-          totalCost: quantity * priceToUse,
-        },
-      ];
-    }
+          quantity,
+          price: stockPrice,
+        }),
+      });
 
-    setFunds((prev) => prev - cost);
-    setStocks(updatedStocks);
-    setSymbol("");
-    setQuantity(1);
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.msg || "Error buying stock");
+        return;
+      }
+
+      setMessage(data.msg);
+      setFunds(data.portfolio.funds);
+      setStocks(data.portfolio.holdings);
+      setSymbol("");
+      setQuantity(1);
+    } catch (err) {
+      console.error("Error buying stock:", err);
+    }
   }
 
   function increaseQuantity() {
@@ -122,13 +110,12 @@ export default function Account() {
 
   return (
     <div>
-      <header>
-        <h1>🏁 StockSprint</h1>
-        <p className="date-time">{new Date().toLocaleString()}</p>
-      </header>
-
       <main>
+        <h1> Welcome to StockSprint</h1>
         <h2 className="welcome-title">Hello, {userEmail || "Trader"}!</h2>
+
+        {message && <p style={{ color: "green" }}>{message}</p>}
+
         <p className="unallocated-funds">
           Unallocated funds: {formatCurrency(funds)}
         </p>
@@ -143,7 +130,6 @@ export default function Account() {
             />
             <button type="submit">Buy</button>
           </div>
-
           <p>
             Price:{" "}
             {stockPrice
@@ -182,8 +168,8 @@ export default function Account() {
                 <tr key={i}>
                   <td>{s.symbol}</td>
                   <td>{formatCurrency(s.totalCost)}</td>
-                  <td>{s.owned}</td>
-                  <td>{formatCurrency(s.pricePer)}</td>
+                  <td>{s.quantity}</td>
+                  <td>{formatCurrency(s.buyPrice)}</td>
                 </tr>
               ))
             ) : (
@@ -198,23 +184,7 @@ export default function Account() {
           Yesterday's profit: {formatCurrency(yesterdayProfit)}
         </div>
 
-        <div className="winner-banner">
-          <div className="banner-bar top-bar"></div>
-          <div className="banner-message">
-            <div
-              className="scroll-container"
-              aria-label="Scrolling winner announcement"
-            >
-              <div
-                className="scroll-text"
-                data-text="Yesterday’s winner will be announced here."
-              >
-                Yesterday’s winner will be announced here.
-              </div>
-            </div>
-          </div>
-          <div className="banner-bar bottom-bar"></div>
-        </div>
+        <p className="date-time">{new Date().toLocaleString()}</p>
       </main>
     </div>
   );
