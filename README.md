@@ -102,12 +102,13 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Node.js/Express HTTP service** - I did not complete this part of the deliverable.
-- [ ] **Static middleware for frontend** - I did not complete this part of the deliverable.
-- [ ] **Calls to third party endpoints** - I did not complete this part of the deliverable.
-- [ ] **Backend service endpoints** - I did not complete this part of the deliverable.
-- [ ] **Frontend calls service endpoints** - I did not complete this part of the deliverable.
-- [ ] **Supports registration, login, logout, and restricted endpoint** - I did not complete this part of the deliverable.
+- [X] **Node.js/Express HTTP service** - I created a backend service using Node.js and Express, located in the /service directory. The service handles API routes for user authentication, leaderboard access, and stock trading actions. It runs on port 4000 as required and uses cookie-parser, bcryptjs, and uuid for authentication management.
+- [X] **Static middleware for frontend** - I configured Express to serve my built frontend using express.static("public"), with a React router fallback that delivers index.html for any unknown route. This ensures the deployed site works for all direct links (like /account or /leaderboard).
+- [X] **Calls to third party endpoints** - My frontend fetches live stock data from the Financial Modeling Prep (FMP) API. It retrieves real-time prices for symbols such as AAPL, TSLA, and AMZN, integrating that data directly into the trading interface so users see current stock values.
+- [X] **Backend service endpoints** - I implemented multiple backend endpoints for StockSprint including /api/register, /api/login, /api/logout, /api/buy, /api/portfolio, and /api/leaderboard. These endpoints manage user data, perform stock transactions, and provide daily results. The backend also includes endpoints to fetch and update opening and closing prices for the trading session. I added additional functionality for daily trading cycles, including profit updates and summary data to make the simulation more complete.
+- [X] **Frontend calls service endpoints** - The React frontend communicates with my backend through fetch requests. For example, buying stocks triggers /api/buy, and user portfolios are retrieved via /api/portfolio. Authentication and leaderboard data are also fetched from the backend in real time. The frontend also makes calls to daily summary and profit update routes for displaying end-of-day results.
+- [X] **Supports registration, login, logout, and restricted endpoint** - I added cookie-based authentication. New users can register and log in securely, and protected routes such as /api/portfolio require a valid session token. The app also supports logging out, which clears the session cookie and restricts further access to private data. This backend structure mirrors a full authentication system and lays the groundwork for connecting to a database in the next deliverable.
+
 
 
 ## 🚀 DB deliverable

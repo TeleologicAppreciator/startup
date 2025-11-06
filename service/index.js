@@ -171,6 +171,55 @@ app.get("/api/leaderboard", (req, res) => {
   res.send(leaderboard);
 });
 
+app.post('/api/update-profits', (req, res) => {
+  Object.keys(playerData).forEach((email) => {
+    const player = playerData[email];
+    const randomProfit = +(Math.random() * 500 - 250).toFixed(2);
+    player.profit = randomProfit;
+  });
+
+  console.log("Profits updated:", playerData);
+  res.send({ msg: "Random profits updated", players: playerData });
+});
+
+app.post('/api/end-day', (req, res) => {
+  Object.keys(playerData).forEach((email) => {
+    playerData[email].holdings = [];
+    playerData[email].funds = 10000;
+  });
+
+  console.log("End of day — portfolios reset.");
+  res.send({ msg: "Trading day ended. All holdings reset.", players: playerData });
+});
+
+app.get('/api/summary', (req, res) => {
+  const token = req.cookies.token;
+  const userEntry = Object.entries(users).find(([_, u]) => u.token === token);
+
+  if (!userEntry) {
+    return res.status(401).send({ msg: "Unauthorized" });
+  }
+
+  const email = userEntry[0];
+  const player = playerData[email] || { funds: 10000, profit: 0, holdings: [] };
+
+  const sorted = Object.entries(playerData)
+    .map(([email, data]) => ({
+      email,
+      profit: data.profit || 0,
+    }))
+    .sort((a, b) => b.profit - a.profit);
+
+  const rank = sorted.findIndex((entry) => entry.email === email) + 1;
+
+  res.send({
+    email,
+    funds: player.funds,
+    profit: player.profit,
+    rank,
+  });
+});
+
 app.get("/api/secure", requireAuth, (req, res) => {
   res.send({ msg: "You accessed a protected endpoint!" });
 });
