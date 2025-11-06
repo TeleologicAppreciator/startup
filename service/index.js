@@ -130,3 +130,77 @@ app.get("/api/leaderboard", (req, res) => {
 app.listen(port, () => {
   console.log(`StockSprint service running on port ${port}`);
 });
+
+const playerData = {};
+
+app.post("/api/buy", (req, res) => {
+  const token = req.cookies.token;
+  const userEntry = Object.entries(users).find(([_, u]) => u.token === token);
+
+  if (!userEntry) {
+    return res.status(401).send({ msg: "Unauthorized" });
+  }
+
+  const email = userEntry[0];
+  const { symbol, quantity, price } = req.body;
+
+  if (!symbol || !quantity || !price) {
+    return res.status(400).send({ msg: "Missing required fields" });
+  }
+
+  if (!playerData[email]) {
+    playerData[email] = { funds: 10000, holdings: [], profit: 0 };
+  }
+
+  const player = playerData[email];
+  const cost = price * quantity;
+
+  if (player.funds < cost) {
+    return res.status(400).send({ msg: "Not enough funds" });
+  }
+
+  player.funds -= cost;
+
+  const existing = player.holdings.find((h) => h.symbol === symbol);
+  if (existing) {
+    existing.quantity += quantity;
+    existing.totalCost += cost;
+    existing.buyPrice = existing.totalCost / existing.quantity;
+  } else {
+    player.holdings.push({ symbol, quantity, buyPrice: price, totalCost: cost });
+  }
+
+  res.send({
+    msg: `Bought ${quantity} shares of ${symbol} at $${price}`,
+    portfolio: player,
+  });
+});
+
+app.get("/api/portfolio", (req, res) => {
+  const token = req.cookies.token;
+  const userEntry = Object.entries(users).find(([_, u]) => u.token === token);
+
+  if (!userEntry) {
+    return res.status(401).send({ msg: "Unauthorized" });
+  }
+
+  const email = userEntry[0];
+  if (!playerData[email]) {
+    playerData[email] = { funds: 10000, holdings: [], profit: 0 };
+  }
+
+  res.send(playerData[email]);
+});
+
+app.get("/api/leaderboard", (req, res) => {
+  const leaderboard = Object.entries(playerData)
+    .map(([email, data]) => ({
+      email,
+      profit: data.profit || 0,
+      funds: data.funds,
+    }))
+    .sort((a, b) => b.profit - a.profit)
+    .slice(0, 10);
+
+  res.send(leaderboard);
+});
