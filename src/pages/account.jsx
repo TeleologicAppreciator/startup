@@ -10,17 +10,19 @@ export default function Account() {
   const [message, setMessage] = React.useState("");
 
   const userEmail = localStorage.getItem("userEmail");
+  const API_KEY = "4072f6f3409f4392a2cdeaa60bc5b4f8";
 
   const formatCurrency = (n) =>
     n.toLocaleString("en-US", { style: "currency", currency: "USD" });
 
-  // --- Fetch portfolio data for logged-in user ---
   React.useEffect(() => {
     async function fetchPortfolio() {
       try {
-        const response = await fetch("/api/portfolio");
+        const response = await fetch("/api/portfolio", {
+          credentials: "include", // 🔑 send cookies
+        });
         if (response.status === 401) {
-          setMessage("This message appears on critical failure.");
+          setMessage("Please log in to view your portfolio.");
           return;
         }
         const data = await response.json();
@@ -33,28 +35,21 @@ export default function Account() {
     fetchPortfolio();
   }, []);
 
-  // --- Fetch opening stock prices from backend ---
   React.useEffect(() => {
     async function fetchStockPrice(symbol) {
       if (!symbol.trim()) {
         setStockPrice(null);
         return;
       }
-
       try {
-        // Ensure backend prices are up to date
-        await fetch("/api/fetch-opening", { method: "POST" });
+        const url = `https://api.twelvedata.com/quote?symbol=${symbol.toUpperCase()}&apikey=${API_KEY}`;
+        const response = await fetch(url);
+        const data = await response.json();
 
-        // Get the latest prices stored in backend memory
-        const response = await fetch("/api/opening-prices");
-        const prices = await response.json();
-
-        const upper = symbol.toUpperCase();
-        const price = prices[upper];
-
-        if (price) {
-          setStockPrice(price);
+        if (data && data.close) {
+          setStockPrice(parseFloat(data.close));
         } else {
+          console.error("Invalid API data:", data);
           setStockPrice(null);
         }
       } catch (err) {
@@ -66,7 +61,6 @@ export default function Account() {
     fetchStockPrice(symbol);
   }, [symbol]);
 
-  // --- Handle buying stocks ---
   async function handleBuy(e) {
     e.preventDefault();
 
@@ -84,6 +78,7 @@ export default function Account() {
       const response = await fetch("/api/buy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // 🔑 send cookie for auth
         body: JSON.stringify({
           symbol: symbol.toUpperCase(),
           quantity,
@@ -108,7 +103,6 @@ export default function Account() {
     }
   }
 
-  // --- Quantity controls ---
   function increaseQuantity() {
     setQuantity((q) => q + 1);
   }

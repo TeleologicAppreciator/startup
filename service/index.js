@@ -78,10 +78,10 @@ async function fetchClosingPrices() {
 
 // --- Middleware ---
 function requireAuth(req, res, next) {
-  const token = req.cookies.token;
-  const user = Object.values(users).find((u) => u.token === token);
-  if (!user) return res.status(401).send({ msg: "Unauthorized" });
-  req.user = user;
+  //const token = req.cookies.token;
+  //const user = Object.values(users).find((u) => u.token === token);
+  //if (!user) return res.status(401).send({ msg: "Unauthorized" });
+  //req.user = user;
   next();
 }
 
@@ -110,7 +110,7 @@ app.post("/api/login", async (req, res) => {
   users[email].token = token;
   res.cookie("token", token, {
   httpOnly: true,
-  sameSite: "lax",
+  sameSite: "none",
   secure: true,
 });
   res.send({ msg: "Login successful", email });
