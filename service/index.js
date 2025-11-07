@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 import fetch from "node-fetch";
 
 const app = express();
-const port = process.argv.length > 2 ? process.argv[2] : 4000;
+const port = process.env.PORT || 4000;
 
 app.use(express.json());
 app.use(cookieParser());
@@ -108,7 +108,11 @@ app.post("/api/login", async (req, res) => {
 
   const token = uuidv4();
   users[email].token = token;
-  res.cookie("token", token, { httpOnly: true });
+  res.cookie("token", token, {
+  httpOnly: true,
+  sameSite: "lax",
+  secure: true,
+});
   res.send({ msg: "Login successful", email });
 });
 
