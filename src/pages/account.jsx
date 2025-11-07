@@ -14,12 +14,13 @@ export default function Account() {
   const formatCurrency = (n) =>
     n.toLocaleString("en-US", { style: "currency", currency: "USD" });
 
+  // --- Fetch portfolio data for logged-in user ---
   React.useEffect(() => {
     async function fetchPortfolio() {
       try {
         const response = await fetch("/api/portfolio");
         if (response.status === 401) {
-          setMessage("Please log in to view your portfolio.");
+          setMessage("This message appears on critical failure.");
           return;
         }
         const data = await response.json();
@@ -32,19 +33,27 @@ export default function Account() {
     fetchPortfolio();
   }, []);
 
+  // --- Fetch opening stock prices from backend ---
   React.useEffect(() => {
     async function fetchStockPrice(symbol) {
       if (!symbol.trim()) {
         setStockPrice(null);
         return;
       }
+
       try {
-        const response = await fetch(
-          `https://financialmodelingprep.com/api/v3/quote-short/${symbol.toUpperCase()}?apikey=demo`
-        );
-        const data = await response.json();
-        if (data && data.length > 0) {
-          setStockPrice(data[0].price);
+        // Ensure backend prices are up to date
+        await fetch("/api/fetch-opening", { method: "POST" });
+
+        // Get the latest prices stored in backend memory
+        const response = await fetch("/api/opening-prices");
+        const prices = await response.json();
+
+        const upper = symbol.toUpperCase();
+        const price = prices[upper];
+
+        if (price) {
+          setStockPrice(price);
         } else {
           setStockPrice(null);
         }
@@ -57,6 +66,7 @@ export default function Account() {
     fetchStockPrice(symbol);
   }, [symbol]);
 
+  // --- Handle buying stocks ---
   async function handleBuy(e) {
     e.preventDefault();
 
@@ -98,6 +108,7 @@ export default function Account() {
     }
   }
 
+  // --- Quantity controls ---
   function increaseQuantity() {
     setQuantity((q) => q + 1);
   }
@@ -111,7 +122,7 @@ export default function Account() {
   return (
     <div>
       <main>
-        <h1> Welcome to StockSprint</h1>
+        <h1>Welcome to StockSprint</h1>
         <h2 className="welcome-title">Hello, {userEmail || "Trader"}!</h2>
 
         {message && <p style={{ color: "green" }}>{message}</p>}
