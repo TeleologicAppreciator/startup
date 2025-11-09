@@ -5,6 +5,9 @@ import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { fileURLToPath } from "url";
 import fetch from "node-fetch";
+import { connectToDatabase } from "./database.js";
+
+await connectToDatabase();
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -78,10 +81,10 @@ async function fetchClosingPrices() {
 
 // --- Middleware ---
 function requireAuth(req, res, next) {
-  //const token = req.cookies.token;
-  //const user = Object.values(users).find((u) => u.token === token);
-  //if (!user) return res.status(401).send({ msg: "Unauthorized" });
-  //req.user = user;
+  const token = req.cookies.token;
+  const user = Object.values(users).find((u) => u.token === token);
+  if (!user) return res.status(401).send({ msg: "Unauthorized" });
+  req.user = user;
   next();
 }
 

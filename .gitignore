@@ -12,3 +12,6 @@ demoVite/
 .DS_Store
 *.log
 .vscode/
+
+# Ignore database credentials
+dbConfig.json

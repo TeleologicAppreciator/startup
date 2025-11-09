@@ -19,7 +19,7 @@ export default function Account() {
     async function fetchPortfolio() {
       try {
         const response = await fetch("/api/portfolio", {
-          credentials: "include", // 🔑 send cookies
+          credentials: "include",
         });
         if (response.status === 401) {
           setMessage("Please log in to view your portfolio.");
@@ -78,7 +78,7 @@ export default function Account() {
       const response = await fetch("/api/buy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // 🔑 send cookie for auth
+        credentials: "include",
         body: JSON.stringify({
           symbol: symbol.toUpperCase(),
           quantity,

@@ -13,31 +13,75 @@ export default function Login({ onAuthChange }) {
     }
   }, [onAuthChange]);
 
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
+    setError(null);
     if (!email || !password) {
       setError("Please enter both email and password");
       return;
     }
 
-    localStorage.setItem("userEmail", email);
-    setError(null);
-    if (onAuthChange) onAuthChange(email, true);
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.msg || "Login failed");
+        return;
+      }
+
+      localStorage.setItem("userEmail", email);
+      if (onAuthChange) onAuthChange(email, true);
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Error connecting to server");
+    }
   }
 
-  function handleCreate(e) {
+  async function handleCreate(e) {
     e.preventDefault();
+    setError(null);
     if (!email || !password) {
       setError("Please enter both email and password");
       return;
     }
 
-    localStorage.setItem("userEmail", email);
-    setError(null);
-    if (onAuthChange) onAuthChange(email, true);
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.msg || "Registration failed");
+        return;
+      }
+
+      await handleLogin(e);
+    } catch (err) {
+      console.error("Registration error:", err);
+      setError("Error connecting to server");
+    }
   }
 
-  function handleLogout() {
+  async function handleLogout() {
+    try {
+      await fetch("/api/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (err) {
+      console.warn("Logout error:", err);
+    }
+
     localStorage.removeItem("userEmail");
     setEmail("");
     setPassword("");
