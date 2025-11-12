@@ -5,8 +5,20 @@ import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { fileURLToPath } from "url";
 import fetch from "node-fetch";
-import { connectToDatabase } from "./database.js";
 
+// --- MongoDB helpers ---
+import {
+  connectToDatabase,
+  getUser,
+  getUserByToken,
+  addUser,
+  updateUser,
+  getPlayer,
+  updatePlayer,
+  getLeaderboard,
+} from "./database.js";
+
+// --- Connect to MongoDB ---
 await connectToDatabase();
 
 const app = express();
@@ -19,10 +31,6 @@ app.use(express.static("public"));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- In-memory data ---
-const users = {};
-const playerData = {};
-
 let openingPrices = {};
 let closingPrices = {};
 
@@ -30,7 +38,6 @@ let closingPrices = {};
 async function fetchOpeningPrices() {
   const symbols = ["AAPL", "TSLA", "AMZN"];
   const apiKey = "4072f6f3409f4392a2cdeaa60bc5b4f8";
-
   openingPrices = {};
 
   for (const symbol of symbols) {
@@ -39,7 +46,6 @@ async function fetchOpeningPrices() {
         `https://api.twelvedata.com/quote?symbol=${symbol}&apikey=${apiKey}`
       );
       const data = await response.json();
-
       if (data && data.symbol && data.close) {
         openingPrices[data.symbol] = parseFloat(data.close);
       } else {
@@ -49,14 +55,12 @@ async function fetchOpeningPrices() {
       console.error(`Error fetching ${symbol}:`, err);
     }
   }
-
   console.log("Opening prices fetched:", openingPrices);
 }
 
 async function fetchClosingPrices() {
   const symbols = Object.keys(openingPrices);
   const apiKey = "4072f6f3409f4392a2cdeaa60bc5b4f8";
-
   closingPrices = {};
 
   for (const symbol of symbols) {
@@ -65,7 +69,6 @@ async function fetchClosingPrices() {
         `https://api.twelvedata.com/quote?symbol=${symbol}&apikey=${apiKey}`
       );
       const data = await response.json();
-
       if (data && data.symbol && data.close) {
         closingPrices[data.symbol] = parseFloat(data.close);
       } else {
@@ -75,14 +78,13 @@ async function fetchClosingPrices() {
       console.error(`Error fetching ${symbol}:`, err);
     }
   }
-
   console.log("Closing prices fetched:", closingPrices);
 }
 
 // --- Middleware ---
-function requireAuth(req, res, next) {
+async function requireAuth(req, res, next) {
   const token = req.cookies.token;
-  const user = Object.values(users).find((u) => u.token === token);
+  const user = await getUserByToken(token);
   if (!user) return res.status(401).send({ msg: "Unauthorized" });
   req.user = user;
   next();
@@ -94,35 +96,41 @@ app.post("/api/register", async (req, res) => {
   if (!email || !password)
     return res.status(400).send({ msg: "Missing email or password" });
 
-  if (users[email]) return res.status(400).send({ msg: "User already exists" });
+  const existing = await getUser(email);
+  if (existing) return res.status(400).send({ msg: "User already exists" });
 
   const passwordHash = await bcrypt.hash(password, 10);
-  users[email] = { passwordHash, token: "" };
+  await addUser({ email, passwordHash, token: "" });
   res.send({ msg: "Registration successful" });
 });
 
 app.post("/api/login", async (req, res) => {
   const { email, password } = req.body;
-  const user = users[email];
+  const user = await getUser(email);
   if (!user) return res.status(400).send({ msg: "User not found" });
 
   const ok = await bcrypt.compare(password, user.passwordHash);
   if (!ok) return res.status(401).send({ msg: "Invalid credentials" });
 
   const token = uuidv4();
-  users[email].token = token;
+  user.token = token;
+  await updateUser(user);
+
   res.cookie("token", token, {
-  httpOnly: true,
-  sameSite: "none",
-  secure: true,
-});
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+  });
   res.send({ msg: "Login successful", email });
 });
 
-app.post("/api/logout", (req, res) => {
+app.post("/api/logout", async (req, res) => {
   const token = req.cookies.token;
-  const entry = Object.entries(users).find(([_, u]) => u.token === token);
-  if (entry) entry[1].token = "";
+  const user = await getUserByToken(token);
+  if (user) {
+    user.token = "";
+    await updateUser(user);
+  }
   res.clearCookie("token");
   res.send({ msg: "Logged out" });
 });
@@ -147,23 +155,18 @@ app.get("/api/closing-prices", (req, res) => {
 });
 
 // --- Trading logic ---
-app.post("/api/buy", requireAuth, (req, res) => {
-  const email = Object.keys(users).find((e) => users[e].token === req.cookies.token);
+app.post("/api/buy", requireAuth, async (req, res) => {
+  const email = req.user.email;
   const { symbol, quantity, price } = req.body;
 
   if (!symbol || !quantity || !price)
     return res.status(400).send({ msg: "Missing required fields" });
 
-  if (!playerData[email]) {
-    playerData[email] = { funds: 10000, holdings: [], profit: 0 };
-  }
-
-  const player = playerData[email];
+  const player = await getPlayer(email);
   const cost = price * quantity;
 
-  if (player.funds < cost) {
+  if (player.funds < cost)
     return res.status(400).send({ msg: "Not enough funds" });
-  }
 
   player.funds -= cost;
 
@@ -176,72 +179,56 @@ app.post("/api/buy", requireAuth, (req, res) => {
     player.holdings.push({ symbol, quantity, buyPrice: price, totalCost: cost });
   }
 
+  await updatePlayer(player);
   res.send({
     msg: `Bought ${quantity} shares of ${symbol} at $${price}`,
     portfolio: player,
   });
 });
 
-app.get("/api/portfolio", requireAuth, (req, res) => {
-  const email = Object.keys(users).find((e) => users[e].token === req.cookies.token);
-
-  if (!playerData[email]) {
-    playerData[email] = { funds: 10000, holdings: [], profit: 0 };
-  }
-
-  res.send(playerData[email]);
+app.get("/api/portfolio", requireAuth, async (req, res) => {
+  const player = await getPlayer(req.user.email);
+  res.send(player);
 });
 
-app.get("/api/leaderboard", (req, res) => {
-  const leaderboard = Object.entries(playerData)
-    .map(([email, data]) => ({
-      email,
-      profit: data.profit || 0,
-      funds: data.funds,
-    }))
-    .sort((a, b) => b.profit - a.profit)
-    .slice(0, 10);
-
+app.get("/api/leaderboard", async (req, res) => {
+  const leaderboard = await getLeaderboard();
   res.send(leaderboard);
 });
 
 // --- Daily cycle / summary endpoints ---
-app.post("/api/update-profits", (req, res) => {
-  Object.keys(playerData).forEach((email) => {
-    const player = playerData[email];
+app.post("/api/update-profits", async (req, res) => {
+  const leaderboard = await getLeaderboard();
+  for (const player of leaderboard) {
     const randomProfit = +(Math.random() * 500 - 250).toFixed(2);
     player.profit = randomProfit;
-  });
+    await updatePlayer(player);
+  }
 
-  console.log("Profits updated:", playerData);
-  res.send({ msg: "Random profits updated", players: playerData });
+  console.log("Profits updated");
+  res.send({ msg: "Random profits updated" });
 });
 
-app.post("/api/end-day", (req, res) => {
-  Object.keys(playerData).forEach((email) => {
-    playerData[email].holdings = [];
-    playerData[email].funds = 10000;
-  });
+app.post("/api/end-day", async (req, res) => {
+  const leaderboard = await getLeaderboard();
+  for (const player of leaderboard) {
+    player.holdings = [];
+    player.funds = 10000;
+    await updatePlayer(player);
+  }
 
   console.log("End of day — portfolios reset.");
-  res.send({ msg: "Trading day ended. All holdings reset.", players: playerData });
+  res.send({ msg: "Trading day ended. All holdings reset." });
 });
 
-app.get("/api/summary", requireAuth, (req, res) => {
-  const email = Object.keys(users).find((e) => users[e].token === req.cookies.token);
-  const player = playerData[email] || { funds: 10000, profit: 0, holdings: [] };
-
-  const sorted = Object.entries(playerData)
-    .map(([email, data]) => ({
-      email,
-      profit: data.profit || 0,
-    }))
-    .sort((a, b) => b.profit - a.profit);
-
-  const rank = sorted.findIndex((entry) => entry.email === email) + 1;
+app.get("/api/summary", requireAuth, async (req, res) => {
+  const player = await getPlayer(req.user.email);
+  const leaderboard = await getLeaderboard();
+  const sorted = leaderboard.sort((a, b) => b.profit - a.profit);
+  const rank = sorted.findIndex((p) => p.email === req.user.email) + 1;
 
   res.send({
-    email,
+    email: player.email,
     funds: player.funds,
     profit: player.profit,
     rank,
