@@ -50,7 +50,7 @@ export default function Leaderboard() {
             <thead>
               <tr>
                 <th>#</th>
-                <th>Email</th>
+                <th>User</th>
                 <th>Profit</th>
               </tr>
             </thead>
