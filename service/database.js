@@ -1,6 +1,5 @@
-// service/database.js
-const { MongoClient } = require("mongodb");
-const fs = require("fs");
+import { MongoClient } from "mongodb";
+import fs from "fs";
 
 // Load dbConfig.json safely:
 const config = JSON.parse(fs.readFileSync("dbConfig.json", "utf8"));
@@ -122,7 +121,7 @@ async function getLeaderboard(tradingDate) {
    EXPORTS
 ================================ */
 
-module.exports = {
+export {
   connectToDatabase,
   getUser,
   getUserByToken,

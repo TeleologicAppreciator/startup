@@ -11,6 +11,7 @@
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
+    "mongodb": "^7.0.0",
     "node-fetch": "^3.3.2",
     "uuid": "^13.0.0"
   }

@@ -13,8 +13,9 @@ import {
   getUserByToken,
   addUser,
   updateUser,
-  getPlayer,
-  updatePlayer,
+  getPortfolio,
+  updatePortfolio,
+  updateLeaderboard,
   getLeaderboard,
 } from "./database.js";
 
@@ -34,7 +35,9 @@ const __dirname = path.dirname(__filename);
 let openingPrices = {};
 let closingPrices = {};
 
-// --- Fetch stock data ---
+// ===============================
+//  Fetch stock prices
+// ===============================
 async function fetchOpeningPrices() {
   const symbols = ["AAPL", "TSLA", "AMZN"];
   const apiKey = "4072f6f3409f4392a2cdeaa60bc5b4f8";
@@ -48,13 +51,12 @@ async function fetchOpeningPrices() {
       const data = await response.json();
       if (data && data.symbol && data.close) {
         openingPrices[data.symbol] = parseFloat(data.close);
-      } else {
-        console.error(`No valid close price for ${symbol}:`, data);
       }
     } catch (err) {
       console.error(`Error fetching ${symbol}:`, err);
     }
   }
+
   console.log("Opening prices fetched:", openingPrices);
 }
 
@@ -71,17 +73,18 @@ async function fetchClosingPrices() {
       const data = await response.json();
       if (data && data.symbol && data.close) {
         closingPrices[data.symbol] = parseFloat(data.close);
-      } else {
-        console.error(`No valid close price for ${symbol}:`, data);
       }
     } catch (err) {
       console.error(`Error fetching ${symbol}:`, err);
     }
   }
+
   console.log("Closing prices fetched:", closingPrices);
 }
 
-// --- Middleware ---
+// ===============================
+//  Auth middleware
+// ===============================
 async function requireAuth(req, res, next) {
   const token = req.cookies.token;
   const user = await getUserByToken(token);
@@ -90,7 +93,9 @@ async function requireAuth(req, res, next) {
   next();
 }
 
-// --- Auth routes ---
+// ===============================
+//  Auth routes
+// ===============================
 app.post("/api/register", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
@@ -101,6 +106,7 @@ app.post("/api/register", async (req, res) => {
 
   const passwordHash = await bcrypt.hash(password, 10);
   await addUser({ email, passwordHash, token: "" });
+
   res.send({ msg: "Registration successful" });
 });
 
@@ -116,25 +122,26 @@ app.post("/api/login", async (req, res) => {
   user.token = token;
   await updateUser(user);
 
-  res.cookie("token", token, {
-  httpOnly: true,
-  sameSite: "lax",
-});
+  res.cookie("token", token, { httpOnly: true, sameSite: "lax" });
   res.send({ msg: "Login successful", email });
 });
 
 app.post("/api/logout", async (req, res) => {
   const token = req.cookies.token;
   const user = await getUserByToken(token);
+
   if (user) {
     user.token = "";
     await updateUser(user);
   }
+
   res.clearCookie("token");
   res.send({ msg: "Logged out" });
 });
 
-// --- Stock endpoints ---
+// ===============================
+//  Stock data endpoints
+// ===============================
 app.post("/api/fetch-opening", async (req, res) => {
   await fetchOpeningPrices();
   res.send({ msg: "Opening prices updated", data: openingPrices });
@@ -153,7 +160,9 @@ app.get("/api/closing-prices", (req, res) => {
   res.send(closingPrices);
 });
 
-// --- Trading logic ---
+// ===============================
+//  Buy stock
+// ===============================
 app.post("/api/buy", requireAuth, async (req, res) => {
   const email = req.user.email;
   const { symbol, quantity, price } = req.body;
@@ -161,85 +170,125 @@ app.post("/api/buy", requireAuth, async (req, res) => {
   if (!symbol || !quantity || !price)
     return res.status(400).send({ msg: "Missing required fields" });
 
-  const player = await getPlayer(email);
+  const tradingDate = new Date().toISOString().slice(0, 10);
+
+  const portfolio = await getPortfolio(email, tradingDate);
   const cost = price * quantity;
 
-  if (player.funds < cost)
+  if (portfolio.funds < cost)
     return res.status(400).send({ msg: "Not enough funds" });
 
-  player.funds -= cost;
+  portfolio.funds -= cost;
 
-  const existing = player.holdings.find((h) => h.symbol === symbol);
+  const existing = portfolio.holdings.find((h) => h.symbol === symbol);
+
   if (existing) {
     existing.quantity += quantity;
     existing.totalCost += cost;
     existing.buyPrice = existing.totalCost / existing.quantity;
   } else {
-    player.holdings.push({ symbol, quantity, buyPrice: price, totalCost: cost });
+    portfolio.holdings.push({
+      symbol,
+      quantity,
+      totalCost: cost,
+      buyPrice: price,
+    });
   }
 
-  await updatePlayer(player);
+  await updatePortfolio(portfolio);
+
   res.send({
     msg: `Bought ${quantity} shares of ${symbol} at $${price}`,
-    portfolio: player,
+    portfolio,
   });
 });
 
+// ===============================
+//  Portfolio
+// ===============================
 app.get("/api/portfolio", requireAuth, async (req, res) => {
-  const player = await getPlayer(req.user.email);
-  res.send(player);
+  const tradingDate = new Date().toISOString().slice(0, 10);
+  const portfolio = await getPortfolio(req.user.email, tradingDate);
+  res.send(portfolio);
 });
 
+// ===============================
+//  Leaderboard
+// ===============================
 app.get("/api/leaderboard", async (req, res) => {
-  const leaderboard = await getLeaderboard();
+  const tradingDate = new Date().toISOString().slice(0, 10);
+  const leaderboard = await getLeaderboard(tradingDate);
   res.send(leaderboard);
 });
 
-// --- Daily cycle / summary endpoints ---
+// ===============================
+//  Daily profit updates
+//  (random for now to match your old behavior)
+// ===============================
 app.post("/api/update-profits", async (req, res) => {
-  const leaderboard = await getLeaderboard();
-  for (const player of leaderboard) {
+  const tradingDate = new Date().toISOString().slice(0, 10);
+  const leaderboard = await getLeaderboard(tradingDate);
+
+  for (const entry of leaderboard) {
     const randomProfit = +(Math.random() * 500 - 250).toFixed(2);
-    player.profit = randomProfit;
-    await updatePlayer(player);
+    await updateLeaderboard(entry.email, tradingDate, randomProfit);
   }
 
   console.log("Profits updated");
   res.send({ msg: "Random profits updated" });
 });
 
+// ===============================
+//  End-of-day reset
+// ===============================
 app.post("/api/end-day", async (req, res) => {
-  const leaderboard = await getLeaderboard();
-  for (const player of leaderboard) {
-    player.holdings = [];
-    player.funds = 10000;
-    await updatePlayer(player);
+  const tradingDate = new Date().toISOString().slice(0, 10);
+  const leaderboard = await getLeaderboard(tradingDate);
+
+  for (const entry of leaderboard) {
+    const portfolio = await getPortfolio(entry.email, tradingDate);
+    portfolio.funds = 10000;
+    portfolio.holdings = [];
+    portfolio.profit = 0;
+
+    await updatePortfolio(portfolio);
   }
 
-  console.log("End of day — portfolios reset.");
+  console.log("End of day — portfolios reset");
   res.send({ msg: "Trading day ended. All holdings reset." });
 });
 
+// ===============================
+//  Summary endpoint
+// ===============================
 app.get("/api/summary", requireAuth, async (req, res) => {
-  const player = await getPlayer(req.user.email);
-  const leaderboard = await getLeaderboard();
-  const sorted = leaderboard.sort((a, b) => b.profit - a.profit);
+  const tradingDate = new Date().toISOString().slice(0, 10);
+
+  const portfolio = await getPortfolio(req.user.email, tradingDate);
+  const leaderboard = await getLeaderboard(tradingDate);
+
+  const sorted = [...leaderboard].sort((a, b) => b.profit - a.profit);
   const rank = sorted.findIndex((p) => p.email === req.user.email) + 1;
 
   res.send({
-    email: player.email,
-    funds: player.funds,
-    profit: player.profit,
+    email: portfolio.email,
+    funds: portfolio.funds,
+    profit: portfolio.profit,
     rank,
   });
 });
 
+// ===============================
+//  Protected endpoint
+// ===============================
 app.get("/api/secure", requireAuth, (req, res) => {
   res.send({ msg: "You accessed a protected endpoint!" });
 });
 
-// --- Fallback for React frontend ---
-app.get("*", (req, res) => {
+// ===============================
+//  React fallback
+// ===============================
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
