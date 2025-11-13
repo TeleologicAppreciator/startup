@@ -117,10 +117,9 @@ app.post("/api/login", async (req, res) => {
   await updateUser(user);
 
   res.cookie("token", token, {
-    httpOnly: true,
-    sameSite: "none",
-    secure: true,
-  });
+  httpOnly: true,
+  sameSite: "lax",
+});
   res.send({ msg: "Login successful", email });
 });
 
