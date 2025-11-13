@@ -35,31 +35,31 @@ export default function Account() {
     fetchPortfolio();
   }, []);
 
-  React.useEffect(() => {
-    async function fetchStockPrice(symbol) {
-      if (!symbol.trim()) {
-        setStockPrice(null);
-        return;
-      }
-      try {
-        const url = `https://api.twelvedata.com/quote?symbol=${symbol.toUpperCase()}&apikey=${API_KEY}`;
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (data && data.close) {
-          setStockPrice(parseFloat(data.close));
-        } else {
-          console.error("Invalid API data:", data);
-          setStockPrice(null);
-        }
-      } catch (err) {
-        console.error("Error fetching stock price:", err);
-        setStockPrice(null);
-      }
+  async function previewPrice() {
+    if (!symbol.trim()) {
+      alert("Please enter a stock symbol.");
+      return;
     }
 
-    fetchStockPrice(symbol);
-  }, [symbol]);
+    setStockPrice("loading");
+
+    try {
+      const url = `https://api.twelvedata.com/quote?symbol=${symbol.toUpperCase()}&apikey=${API_KEY}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data && data.close) {
+        setStockPrice(parseFloat(data.close));
+      } else {
+        alert("Could not fetch stock price.");
+        setStockPrice(null);
+      }
+    } catch (err) {
+      console.error("Preview price error:", err);
+      alert("Error fetching stock price");
+      setStockPrice(null);
+    }
+  }
 
   async function handleBuy(e) {
     e.preventDefault();
@@ -133,14 +133,20 @@ export default function Account() {
               value={symbol}
               onChange={(e) => setSymbol(e.target.value)}
             />
+
+            <button type="button" onClick={previewPrice}>
+              Preview Price
+            </button>
+
             <button type="submit">Buy</button>
           </div>
+
           <p>
             Price:{" "}
-            {stockPrice
+            {stockPrice === "loading"
+              ? "Loading..."
+              : stockPrice
               ? formatCurrency(stockPrice)
-              : symbol
-              ? "Fetching..."
               : "—"}{" "}
             × {quantity}
             <span className="qty-buttons">
