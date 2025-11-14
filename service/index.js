@@ -295,3 +295,54 @@ app.use((req, res) => {
 app.listen(port, () => {
   console.log(`StockSprint service running on port ${port}`);
 });
+
+import { WebSocketServer } from "ws";
+
+// Create a websocket server attached to the same HTTP server
+const wss = new WebSocketServer({ noServer: true });
+
+// Attach upgrade handler to your current Express server
+const server = app.listen(port, () => {
+  console.log(`StockSprint service running on port ${port}`);
+});
+
+server.on("upgrade", (req, socket, head) => {
+  if (req.url === "/ws") {
+    wss.handleUpgrade(req, socket, head, ws => {
+      wss.emit("connection", ws, req);
+    });
+  } else {
+    socket.destroy();
+  }
+});
+
+// Store connections
+wss.on("connection", ws => {
+  console.log("WebSocket connected");
+
+  ws.isAlive = true;
+
+  ws.on("pong", () => {
+    ws.isAlive = true;
+  });
+
+  ws.on("message", data => {
+    // For now: broadcast to everyone
+    wss.clients.forEach(client => {
+      if (client.readyState === 1) {
+        client.send(data.toString());
+      }
+    });
+  });
+
+  ws.send(JSON.stringify({ system: "connected" }));
+});
+
+// Ping/pong keepalive
+setInterval(() => {
+  wss.clients.forEach(ws => {
+    if (!ws.isAlive) return ws.terminate();
+    ws.isAlive = false;
+    ws.ping();
+  });
+}, 10000);

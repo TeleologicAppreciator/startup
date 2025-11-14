@@ -10,6 +10,10 @@ function App() {
   const [userName, setUserName] = React.useState("");
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
+  // NEW: WebSocket state
+  const [wsMessages, setWsMessages] = React.useState([]);
+
+  // Authentication load
   React.useEffect(() => {
     const savedUser = localStorage.getItem("userEmail");
     if (savedUser) {
@@ -19,10 +23,35 @@ function App() {
   }, []);
 
   function handleAuthChange(user, loggedIn) {
-    console.log("Auth changed:", user, loggedIn);
     setUserName(user);
-   setIsAuthenticated(loggedIn);
+    setIsAuthenticated(loggedIn);
   }
+
+  // NEW: WebSocket connection
+  React.useEffect(() => {
+    const protocol = window.location.protocol === "http:" ? "ws" : "wss";
+    const socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
+
+    socket.onopen = () => {
+      console.log("WebSocket connected");
+    };
+
+    socket.onmessage = (event) => {
+      try {
+        const msg = JSON.parse(event.data);
+        console.log("WS message:", msg);
+        setWsMessages((prev) => [...prev, msg]);
+      } catch (err) {
+        console.error("WS parse error:", err);
+      }
+    };
+
+    socket.onclose = () => {
+      console.log("WebSocket disconnected");
+    };
+
+    return () => socket.close();
+  }, []);
 
   return (
     <div id="app-shell">
@@ -36,6 +65,7 @@ function App() {
                   Home
                 </NavLink>
               </li>
+
               {isAuthenticated && (
                 <>
                   <li>
@@ -55,6 +85,16 @@ function App() {
         </header>
 
         <main>
+          {/* You can remove this later — it's just to prove WS messages appear */}
+          <div className="ws-debug">
+            <h3>WebSocket Messages</h3>
+            {wsMessages.map((m, i) => (
+              <div key={i}>
+                <strong>{m.from}:</strong> {m.msg}
+              </div>
+            ))}
+          </div>
+
           <Routes>
             <Route
               path="/"
