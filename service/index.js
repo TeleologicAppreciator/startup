@@ -238,6 +238,16 @@ app.post("/api/update-profits", async (req, res) => {
   res.send({ msg: "Random profits updated" });
 });
 
+app.post("/api/daily-update", async (req, res) => {
+  console.log("[ManualDailyUpdate] Daily update triggered manually");
+
+  // TODO: future — fetch new stock prices
+  // TODO: future — auto-buy/auto-sell
+  // TODO: future — update user portfolios
+
+  res.json({ status: "ok", msg: "Daily update triggered (placeholder)" });
+});
+
 // ===============================
 //  End-of-day reset
 // ===============================
