@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { fileURLToPath } from "url";
 import fetch from "node-fetch";
+import { simulateDailyUpdate } from "./dailyUpdate.js";
 
 // --- MongoDB helpers ---
 import {
@@ -219,6 +220,11 @@ app.get("/api/leaderboard", async (req, res) => {
   const tradingDate = new Date().toISOString().slice(0, 10);
   const leaderboard = await getLeaderboard(tradingDate);
   res.send(leaderboard);
+});
+
+app.get("/api/testDailyUpdate", (req, res) => {
+  simulateDailyUpdate();
+  res.json({ msg: "Daily update simulated" });
 });
 
 // ===============================
