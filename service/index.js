@@ -37,6 +37,19 @@ const __dirname = path.dirname(__filename);
 let openingPrices = {};
 let closingPrices = {};
 
+// Create WebSocket server
+const wss = new WebSocketServer({ noServer: true });
+
+// Broadcast to all connected clients
+function broadcast(message) {
+  const payload = JSON.stringify(message);
+  wss.clients.forEach((client) => {
+    if (client.readyState === 1) {
+      client.send(payload);
+    }
+  });
+}
+
 // ===============================
 //  Fetch stock prices
 // ===============================
@@ -309,10 +322,7 @@ app.use((req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Create a websocket server attached to the same HTTP server
-const wss = new WebSocketServer({ noServer: true });
-
-// Attach upgrade handler to your current Express server
+// Start server and setup WebSocket
 const server = app.listen(port, () => {
   console.log(`StockSprint service running on port ${port}`);
 });
