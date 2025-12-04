@@ -108,6 +108,13 @@ async function fetchClosingPrices() {
   }
 
   console.log("Closing prices fetched:", closingPrices);
+
+  // Broadcast to all clients
+  broadcast({
+    type: "closing_prices",
+    prices: closingPrices,
+    timestamp: new Date().toISOString(),
+  });
 }
 
 // ===============================
