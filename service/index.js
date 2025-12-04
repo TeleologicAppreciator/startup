@@ -278,6 +278,10 @@ app.post("/api/buy", requireAuth, async (req, res) => {
   const email = req.user.email;
   const { symbol, quantity, price } = req.body;
 
+  if (!tradingState.isOpen) {
+    return res.status(400).send({ msg: "Trading is currently closed" });
+  }
+
   if (!symbol || !quantity || !price)
     return res.status(400).send({ msg: "Missing required fields" });
 
@@ -308,6 +312,16 @@ app.post("/api/buy", requireAuth, async (req, res) => {
 
   await updatePortfolio(portfolio);
 
+  // Broadcast trade to all users
+  broadcast({
+    type: "trade",
+    user: email,
+    symbol,
+    quantity,
+    price,
+    timestamp: new Date().toISOString(),
+  });
+
   res.send({
     msg: `Bought ${quantity} shares of ${symbol} at $${price}`,
     portfolio,
@@ -330,6 +344,27 @@ app.get("/api/leaderboard", async (req, res) => {
   const tradingDate = new Date().toISOString().slice(0, 10);
   const leaderboard = await getLeaderboard(tradingDate);
   res.send(leaderboard);
+});
+
+// ===============================
+//  Manual Trading Controls
+// ===============================
+app.get("/api/trading-state", (req, res) => {
+  res.send({
+    ...tradingState,
+    openingPrices,
+    closingPrices,
+  });
+});
+
+app.post("/api/manual-open", async (req, res) => {
+  await openTradingDay();
+  res.json({ msg: "Trading day manually opened" });
+});
+
+app.post("/api/manual-close", async (req, res) => {
+  await closeTradingDay();
+  res.json({ msg: "Trading day manually closed" });
 });
 
 app.get("/api/testDailyUpdate", (req, res) => {
