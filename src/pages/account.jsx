@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Account() {
+export default function Account({ userName, tradingState, wsMessages }) {
   const [funds, setFunds] = React.useState(0);
   const [stocks, setStocks] = React.useState([]);
   const [symbol, setSymbol] = React.useState("");
@@ -35,6 +35,18 @@ export default function Account() {
     fetchPortfolio();
   }, []);
 
+  // Refresh portfolio when WebSocket events occur
+  React.useEffect(() => {
+    if (wsMessages.length === 0) return;
+
+    const latestMessage = wsMessages[wsMessages.length - 1];
+
+    if (latestMessage.type === "trading_closed" ||
+        latestMessage.type === "leaderboard_update") {
+      fetchPortfolio();
+    }
+  }, [wsMessages]);
+
   async function previewPrice() {
     if (!symbol.trim()) {
       alert("Please enter a stock symbol.");
@@ -63,6 +75,11 @@ export default function Account() {
 
   async function handleBuy(e) {
     e.preventDefault();
+
+    if (!tradingState.isOpen) {
+      alert("Trading is currently closed. Please wait for the market to open.");
+      return;
+    }
 
     if (!symbol.trim()) {
       alert("Please enter a stock symbol before buying.");
@@ -119,6 +136,12 @@ export default function Account() {
         <h1>Welcome to StockSprint</h1>
         <h2 className="welcome-title">Hello, {userEmail || "Trader"}!</h2>
 
+        {!tradingState.isOpen && (
+          <div className="market-closed-notice">
+            ⚠️ Market is currently closed. Trading will resume when the market opens.
+          </div>
+        )}
+
         {message && <p style={{ color: "green" }}>{message}</p>}
 
         <p className="unallocated-funds">
@@ -129,16 +152,26 @@ export default function Account() {
           <div>
             <input
               type="text"
-              placeholder="Stock symbol to buy"
+              placeholder="Stock symbol (e.g., AAPL, TSLA)"
               value={symbol}
               onChange={(e) => setSymbol(e.target.value)}
+              disabled={!tradingState.isOpen}
             />
 
-            <button type="button" onClick={previewPrice}>
+            <button
+              type="button"
+              onClick={previewPrice}
+              disabled={!tradingState.isOpen || !symbol.trim()}
+            >
               Preview Price
             </button>
 
-            <button type="submit">Buy</button>
+            <button
+              type="submit"
+              disabled={!tradingState.isOpen || !stockPrice || stockPrice === "loading"}
+            >
+              Buy
+            </button>
           </div>
 
           <p>

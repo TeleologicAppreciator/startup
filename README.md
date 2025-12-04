@@ -122,8 +122,8 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Backend listens for WebSocket connection** - I did not complete this part of the deliverable.
-- [ ] **Frontend makes WebSocket connection** - I did not complete this part of the deliverable.
-- [ ] **Data sent over WebSocket connection** - I did not complete this part of the deliverable.
-- [ ] **WebSocket data displayed** - I did not complete this part of the deliverable.
-- [ ] **Application is fully functional** - I did not complete this part of the deliverable.
+- [X] **Backend listens for WebSocket connection** - My backend creates a WebSocketServer using the ws package and listens for connections on the /ws endpoint. The server handles HTTP upgrade requests and maintains active connections using ping/pong keepalive messages.
+- [X] **Frontend makes WebSocket connection** - The React frontend establishes a WebSocket connection in app.jsx. It automatically selects the correct protocol (ws for development, wss for production) based on the current page protocol and connects to the server when the app loads.
+- [X] **Data sent over WebSocket connection** - The application sends multiple message types over WebSocket including trade notifications when users buy stocks, opening and closing price updates from the stock API, trading state changes when the market opens or closes, and leaderboard updates after profit calculations. The backend uses a broadcast function to send messages to all connected clients.
+- [X] **WebSocket data displayed** - The frontend displays WebSocket data in several places: connection status indicator in the header shows if WebSocket is connected, trading status shows if the market is open or closed, popup notifications appear for trade events and market state changes, the leaderboard automatically refreshes when new profits are calculated, and the account page disables trading when the market is closed based on WebSocket messages.
+- [X] **Application is fully functional** - Stock Sprint now features automatic market open and close cycles with real-time profit calculations at market close. When the market closes, all user holdings are automatically valued at the closing price and profits are calculated as (total portfolio value - starting amount of $10,000). The system broadcasts these updates to all connected users in real-time. Multiple users can trade simultaneously and see each other's activity through WebSocket notifications. All data persists in MongoDB and real stock prices come from the TwelveData API. No mocks or placeholder features remain.

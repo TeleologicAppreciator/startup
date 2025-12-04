@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Leaderboard() {
+export default function Leaderboard({ wsMessages }) {
   const [leaders, setLeaders] = React.useState([]);
   const [error, setError] = React.useState(null);
 
@@ -37,6 +37,18 @@ export default function Leaderboard() {
     return () => clearInterval(interval);
   }, []);
 
+  // Refresh when WebSocket indicates leaderboard update
+  React.useEffect(() => {
+    if (wsMessages.length === 0) return;
+
+    const latestMessage = wsMessages[wsMessages.length - 1];
+
+    if (latestMessage.type === "leaderboard_update" ||
+        latestMessage.type === "trading_closed") {
+      loadLeaderboard();
+    }
+  }, [wsMessages]);
+
   return (
     <div className="leaderboard-page">
       <main>
@@ -56,13 +68,23 @@ export default function Leaderboard() {
             </thead>
             <tbody>
               {leaders.length ? (
-                leaders.map((player, index) => (
-                  <tr key={player.email || index}>
-                    <td>{index + 1}</td>
-                    <td>{player.email}</td>
-                    <td>${player.profit?.toFixed(2) || "0.00"}</td>
-                  </tr>
-                ))
+                leaders.map((player, index) => {
+                  const profit = player.profit || 0;
+                  const profitClass = profit > 0 ? "positive" : profit < 0 ? "negative" : "";
+                  const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : "";
+
+                  return (
+                    <tr key={player.email || index}>
+                      <td>{medal} {index + 1}</td>
+                      <td>{player.email}</td>
+                      <td className={profitClass}>
+                        ${profit.toFixed(2)}
+                        {profit > 0 && " 📈"}
+                        {profit < 0 && " 📉"}
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
                   <td colSpan="3">No leaders yet</td>
