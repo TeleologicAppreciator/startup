@@ -37,6 +37,12 @@ const __dirname = path.dirname(__filename);
 let openingPrices = {};
 let closingPrices = {};
 
+let tradingState = {
+  isOpen: false,
+  openTime: null,
+  closeTime: null,
+};
+
 // Create WebSocket server
 const wss = new WebSocketServer({ noServer: true });
 
@@ -73,6 +79,13 @@ async function fetchOpeningPrices() {
   }
 
   console.log("Opening prices fetched:", openingPrices);
+
+  // Broadcast to all clients
+  broadcast({
+    type: "opening_prices",
+    prices: openingPrices,
+    timestamp: new Date().toISOString(),
+  });
 }
 
 async function fetchClosingPrices() {
