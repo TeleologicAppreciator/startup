@@ -10,7 +10,8 @@ function App() {
   const [userName, setUserName] = React.useState("");
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
-  // NEW: WebSocket state
+  // WebSocket connection
+  const [isConnected, setIsConnected] = React.useState(false);
   const [wsMessages, setWsMessages] = React.useState([]);
 
   // Authentication load
@@ -27,7 +28,7 @@ function App() {
     setIsAuthenticated(loggedIn);
   }
 
-  // NEW: WebSocket connection
+  // WebSocket connection
   React.useEffect(() => {
     const protocol = window.location.protocol === "http:" ? "ws" : "wss";
     const socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
