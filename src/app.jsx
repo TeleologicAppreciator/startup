@@ -14,6 +14,13 @@ function App() {
   const [isConnected, setIsConnected] = React.useState(false);
   const [wsMessages, setWsMessages] = React.useState([]);
 
+  const [tradingState, setTradingState] = React.useState({
+    isOpen: false,
+    openTime: null,
+    closeTime: null,
+  });
+  const [notification, setNotification] = React.useState(null);
+
   // Authentication load
   React.useEffect(() => {
     const savedUser = localStorage.getItem("userEmail");
@@ -22,6 +29,54 @@ function App() {
       setIsAuthenticated(true);
     }
   }, []);
+
+    // Fetch initial trading state
+  React.useEffect(() => {
+    async function fetchTradingState() {
+      try {
+        const response = await fetch("/api/trading-state");
+        const data = await response.json();
+        setTradingState(data);
+      } catch (err) {
+        console.error("Error fetching trading state:", err);
+      }
+    }
+    fetchTradingState();
+  }, []);
+
+  // Handle WebSocket messages
+  React.useEffect(() => {
+    if (wsMessages.length === 0) return;
+
+    const latestMessage = wsMessages[wsMessages.length - 1];
+
+    switch (latestMessage.type) {
+      case "trading_opened":
+        setTradingState((prev) => ({ ...prev, isOpen: true }));
+        showNotification("🔔 Trading Day Opened!", "success");
+        break;
+      case "trading_closed":
+        setTradingState((prev) => ({ ...prev, isOpen: false }));
+        showNotification("🔔 Trading Closed! Check profits.", "info");
+        break;
+      case "trade":
+        if (latestMessage.user !== userName) {
+          showNotification(
+            `📊 ${latestMessage.user} bought ${latestMessage.quantity} ${latestMessage.symbol}`,
+            "trade"
+          );
+        }
+        break;
+      case "leaderboard_update":
+        showNotification("📈 Leaderboard Updated!", "success");
+        break;
+    }
+  }, [wsMessages, userName]);
+
+  function showNotification(message, type = "info") {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 5000);
+  }
 
   function handleAuthChange(user, loggedIn) {
     setUserName(user);
@@ -58,7 +113,17 @@ function App() {
     <div id="app-shell">
       <BrowserRouter>
         <header>
-          <h1>Stock Sprint!</h1>
+          <div className="header-left">
+            <h1>Stock Sprint!</h1>
+            <div className="connection-status">
+              <span className={`status-indicator ${isConnected ? "connected" : "disconnected"}`}>
+                {isConnected ? "🟢 Connected" : "🔴 Disconnected"}
+              </span>
+              <span className={`trading-status ${tradingState.isOpen ? "open" : "closed"}`}>
+                {tradingState.isOpen ? "📈 Market Open" : "📉 Market Closed"}
+              </span>
+            </div>
+          </div>
           <nav>
             <ul>
               <li>
@@ -85,6 +150,12 @@ function App() {
           </nav>
         </header>
 
+        {notification && (
+          <div className={`notification notification-${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
+
         <main>
           {/* You can remove this later — it's just to prove WS messages appear */}
           <div className="ws-debug">
@@ -104,13 +175,21 @@ function App() {
             <Route
               path="/account"
               element={
-                isAuthenticated ? <Account userName={userName} /> : <Navigate to="/" replace />
+                isAuthenticated ? (
+                  <Account userName={userName} tradingState={tradingState} wsMessages={wsMessages} />
+                ) : (
+                  <Navigate to="/" replace />
+                )
               }
             />
             <Route
               path="/leaderboard"
               element={
-                isAuthenticated ? <Leaderboard /> : <Navigate to="/" replace />
+                isAuthenticated ? (
+                  <Leaderboard wsMessages={wsMessages} />
+                ) : (
+                  <Navigate to="/" replace />
+                )
               }
             />
             <Route path="/about" element={<About />} />

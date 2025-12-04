@@ -393,3 +393,115 @@ section:nth-child(2) {
 #app-shell > main {
   flex: 1;
 }
+
+/* ===================================
+   WebSocket Status & Notifications
+   =================================== */
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px;
+}
+
+.header-left h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.connection-status {
+  display: flex;
+  gap: 15px;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.status-indicator,
+.trading-status {
+  padding: 2px 8px;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.status-indicator.connected {
+  color: #90EE90;
+}
+
+.status-indicator.disconnected {
+  color: #FF6B6B;
+}
+
+.trading-status.open {
+  color: #90EE90;
+}
+
+.trading-status.closed {
+  color: #FFB347;
+}
+
+/* Notification Popups */
+.notification {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 15px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  animation: slideDown 0.3s ease-out;
+  max-width: 90%;
+  text-align: center;
+  font-weight: 500;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translate(-50%, -20px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+.notification-success {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.notification-info {
+  background-color: #2196F3;
+  color: white;
+}
+
+.notification-trade {
+  background-color: #9C27B0;
+  color: white;
+}
+
+/* Market Closed Notice */
+.market-closed-notice {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #ffeeba;
+  text-align: center;
+  margin: 20px auto;
+  max-width: 600px;
+  font-weight: 500;
+}
+
+/* Profit Colors */
+.positive {
+  color: #90EE90 !important;
+  font-weight: bold;
+}
+
+.negative {
+  color: #FF6B6B !important;
+  font-weight: bold;
+}
