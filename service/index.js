@@ -6,6 +6,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fetch from "node-fetch";
 import { simulateDailyUpdate } from "./dailyUpdate.js";
+import { WebSocketServer } from "ws";
 
 // --- MongoDB helpers ---
 import {
@@ -307,12 +308,6 @@ app.get("/api/secure", requireAuth, (req, res) => {
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
-
-app.listen(port, () => {
-  console.log(`StockSprint service running on port ${port}`);
-});
-
-import { WebSocketServer } from "ws";
 
 // Create a websocket server attached to the same HTTP server
 const wss = new WebSocketServer({ noServer: true });
