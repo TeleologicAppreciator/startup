@@ -118,6 +118,82 @@ async function fetchClosingPrices() {
 }
 
 // ===============================
+//  Trading Day Management
+// ===============================
+async function openTradingDay() {
+  console.log("\n[Trading] ========== OPENING TRADING DAY ==========");
+
+  tradingState.isOpen = true;
+  tradingState.openTime = new Date().toISOString();
+
+  await fetchOpeningPrices();
+
+  broadcast({
+    type: "trading_opened",
+    message: "Trading day has opened!",
+    timestamp: tradingState.openTime,
+  });
+
+  console.log("[Trading] Trading day is now OPEN");
+}
+
+async function closeTradingDay() {
+  console.log("\n[Trading] ========== CLOSING TRADING DAY ==========");
+
+  tradingState.isOpen = false;
+  tradingState.closeTime = new Date().toISOString();
+
+  await fetchClosingPrices();
+  await calculateAllProfits();
+
+  broadcast({
+    type: "trading_closed",
+    message: "Trading day has closed!",
+    timestamp: tradingState.closeTime,
+  });
+
+  console.log("[Trading] Trading day is now CLOSED");
+}
+
+async function calculateAllProfits() {
+  console.log("[Profits] Calculating profits for all users...");
+
+  const tradingDate = new Date().toISOString().slice(0, 10);
+  const leaderboard = await getLeaderboard(tradingDate);
+
+  for (const entry of leaderboard) {
+    const portfolio = await getPortfolio(entry.email, tradingDate);
+
+    let totalValue = portfolio.funds;
+
+    for (const holding of portfolio.holdings) {
+      const closingPrice = closingPrices[holding.symbol];
+      if (closingPrice) {
+        totalValue += holding.quantity * closingPrice;
+      } else {
+        totalValue += holding.totalCost;
+      }
+    }
+
+    const profit = totalValue - 10000;
+    portfolio.profit = profit;
+
+    await updatePortfolio(portfolio);
+    await updateLeaderboard(entry.email, tradingDate, profit);
+  }
+
+  const updatedLeaderboard = await getLeaderboard(tradingDate);
+
+  broadcast({
+    type: "leaderboard_update",
+    leaderboard: updatedLeaderboard,
+    timestamp: new Date().toISOString(),
+  });
+
+  console.log("[Profits] All profits calculated");
+}
+
+// ===============================
 //  Auth middleware
 // ===============================
 async function requireAuth(req, res, next) {
