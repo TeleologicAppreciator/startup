@@ -90,6 +90,7 @@ function App() {
 
     socket.onopen = () => {
       console.log("WebSocket connected");
+      setIsConnected(true);
     };
 
     socket.onmessage = (event) => {
