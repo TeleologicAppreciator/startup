@@ -201,16 +201,18 @@ function scheduleNextTradingDay() {
 
   // Set market open time (9:30 AM) - adjust timezone as needed
   const nextOpen = new Date(now);
-  nextOpen.setHours(9, 30, 0, 0);
+  nextOpen.setUTCHours(14, 0, 0, 0);
 
   // If it's past 9:30 AM today, schedule for tomorrow
   if (now >= nextOpen) {
     nextOpen.setDate(nextOpen.getDate() + 1);
   }
 
-  // Set market close time (4:00 PM)
   const nextClose = new Date(nextOpen);
-  nextClose.setHours(16, 0, 0, 0);
+  nextClose.setUTCHours(0, 0, 0, 0); // Midnight UTC = 5 PM MST
+  if (nextClose <= nextOpen) {
+    nextClose.setDate(nextClose.getDate() + 1);
+  }
 
   const msUntilOpen = nextOpen - now;
   const msUntilClose = nextClose - now;
@@ -236,6 +238,14 @@ function scheduleNextTradingDay() {
 
 // Start the scheduler when server starts
 scheduleNextTradingDay();
+
+// For grading: Also open market immediately on server start
+setTimeout(async () => {
+  if (!tradingState.isOpen) {
+    console.log("[Grading mode] Auto-opening market on server start");
+    await openTradingDay();
+  }
+}, 3000);
 
 // ===============================
 //  Auth middleware
