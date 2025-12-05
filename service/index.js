@@ -194,6 +194,50 @@ async function calculateAllProfits() {
 }
 
 // ===============================
+//  Automatic Scheduling System
+// ===============================
+function scheduleNextTradingDay() {
+  const now = new Date();
+
+  // Set market open time (9:30 AM) - adjust timezone as needed
+  const nextOpen = new Date(now);
+  nextOpen.setHours(9, 30, 0, 0);
+
+  // If it's past 9:30 AM today, schedule for tomorrow
+  if (now >= nextOpen) {
+    nextOpen.setDate(nextOpen.getDate() + 1);
+  }
+
+  // Set market close time (4:00 PM)
+  const nextClose = new Date(nextOpen);
+  nextClose.setHours(16, 0, 0, 0);
+
+  const msUntilOpen = nextOpen - now;
+  const msUntilClose = nextClose - now;
+
+  console.log(`[Scheduler] Next market open: ${nextOpen.toLocaleString()}`);
+  console.log(`[Scheduler] Next market close: ${nextClose.toLocaleString()}`);
+
+  // Schedule opening
+  if (msUntilOpen > 0) {
+    setTimeout(() => {
+      openTradingDay();
+      scheduleNextTradingDay(); // Schedule next day
+    }, msUntilOpen);
+  }
+
+  // Schedule closing (only if it's today)
+  if (msUntilClose > 0 && now.getDate() === nextClose.getDate()) {
+    setTimeout(() => {
+      closeTradingDay();
+    }, msUntilClose);
+  }
+}
+
+// Start the scheduler when server starts
+scheduleNextTradingDay();
+
+// ===============================
 //  Auth middleware
 // ===============================
 async function requireAuth(req, res, next) {
