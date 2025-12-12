@@ -543,3 +543,81 @@ A record cannot point to another A record
 HTTPS and Certificates:
 HTTPS requires a valid SSL/TLS certificate
 Used for encrypted, secure communication
+
+Default Ports
+HTTP: 80
+HTTPS: 443
+SSH: 22
+
+HTTP Status Code Ranges
+3xx (Redirection): Resource has moved, client should redirect. Examples: 304 Not Modified, 307/308 Redirect
+4xx (Client Error): Problem with the request. Examples: 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found
+5xx (Server Error): Server failed to fulfill valid request. Examples: 500 Internal Server Error, 503 Service Unavailable
+
+Content-Type Header
+Specifies the MIME type of the resource being sent, allowing client and server to understand how to parse the body. Examples: application/json, text/html, text/css, image/png
+Cookie Types
+Secure: Only sent over HTTPS connections
+HttpOnly: Cannot be accessed by JavaScript (document.cookie), protects against XSS attacks
+SameSite: Controls cross-site cookie behavior with values Strict, Lax, or None
+
+Express Middleware
+Middleware executes in the order it is added. Each middleware receives (req, res, next) parameters. Middleware runs for every request unless preceding middleware does not call next(). Routing functions only run when their pattern matches. If next() is not called, the middleware chain stops. For example, if you have a logging middleware that calls console.log(req.originalUrl) followed by next(), and then a route handler for /api/document, a GET request to /api/document would output /api/document to the console.
+
+Express Service and Frontend Fetch
+The fetch() function returns a Promise that resolves to a Response object. You must call .json() to parse the body, which also returns a Promise. The final result is the JavaScript object or array from the server. Example: const response = await fetch('/api/scores'); const scores = await response.json();
+
+MongoDB Query
+Query { name: "Mark" } returns all documents where the name field exactly equals "Mark". Common operators include $gt and $gte for greater than, $lt and $lte for less than, $or for logical OR between conditions, and regex patterns like /(pattern)/i for pattern matching.
+
+Password Storage
+Store passwords as salted, cryptographically hashed values using bcrypt or similar slow algorithms like Argon2 or scrypt. Use bcrypt.hash(password, 10) to store and bcrypt.compare(password, user.password) to verify. Never store plain text passwords or use fast hashing algorithms like MD5 or SHA-1.
+
+WebSocket
+WebSocket provides full-duplex, bidirectional, peer-to-peer communication over a single persistent TCP connection. Either party can send data at any time after the initial HTTP connection is upgraded. The frontend creates a connection with new WebSocket(url), registers callbacks with socket.onmessage, and sends messages with socket.send(). The backend uses the ws package to create a WebSocketServer, listens for connections with wss.on('connection'), receives messages with ws.on('message'), and sends with ws.send().
+
+Acronyms
+JSX: JavaScript XML
+JS: JavaScript
+AWS: Amazon Web Services
+NPM: Node Package Manager
+NVM: Node Version Manager
+
+React Component Rendering
+Props pass data from parent to child components. Components render based on their props and state. For nested components, trace the component tree from top to bottom, evaluating what each component returns based on the props passed to it. When a parent passes a prop like color={color} to a child, the child receives it as a parameter and can use it in its JSX.
+
+React useState
+Adds reactive state to functional components. Returns an array with [currentValue, updateFunction]. State updates are asynchronous, so you cannot access the new value immediately after calling the update function. When state changes, the component re-renders. React maintains a state table tracking current and desired values for every component.
+
+React Hooks Purpose
+React Hooks allow functional components to use state, lifecycle events, context, refs, and performance optimizations that were previously only available in class components. Hooks must be called at the top scope of the function and cannot be called inside loops or conditionals. This ensures hooks are always called in the same order when rendering.
+
+React Hooks Reference
+useState: Declares a state variable and returns [value, setter]
+useContext: Accesses values from a Context Provider without prop drilling
+useRef: Creates a mutable reference that persists across renders without causing re-renders, commonly used for DOM element access
+useEffect: Performs side effects after render such as data fetching, subscriptions, or DOM manipulation. With no dependency array it runs after every render. With an empty array [] it runs only on first render. With [count] it runs when count changes. Return a cleanup function to run code when the component unmounts.
+useMemo and useCallback: Memoize values or functions to prevent unnecessary recalculations
+
+React Router
+BrowserRouter wraps the application. Route maps URL paths to components using path and element props. Link enables navigation without full page reload. useNavigate() hook provides programmatic navigation.
+
+package.json
+The package.json file is the manifest for a Node.js project containing metadata (name, version, description), dependencies for production packages, devDependencies for development-only packages, scripts for command shortcuts like npm run dev, and type to specify module system (use "module" for ES modules).
+
+fetch Function
+Browser API for making HTTP requests. Returns a Promise that resolves to a Response object. The response must be parsed using .json(), .text(), or similar methods. Default HTTP method is GET; use an options object with method, headers, and body properties for POST, PUT, or DELETE requests.
+
+Node.js
+Node.js is a JavaScript runtime built on Chrome's V8 engine that executes JavaScript outside the browser on the server side, provides access to file system, network, and system resources, and runs JavaScript files via the command node filename.js.
+
+PM2
+PM2 is a production process manager for Node.js applications that keeps applications running as daemons (background processes), automatically restarts applications on crashes, enables load balancing across CPU cores, and provides logging and monitoring. Common commands: pm2 start, pm2 ls, pm2 restart, pm2 save.
+
+Vite
+Vite is a modern frontend build tool and development server that provides fast Hot Module Replacement (HMR) using native ES modules during development and creates production builds via Rollup with minification, bundling, and transpilation. Use npm run dev to start the development server and npm run build to create the dist directory for production. Configure vite.config.js to proxy API requests to your backend during development.
+
+SOP (Same Origin Policy): JavaScript can only make requests to the same domain that the page was loaded from
+CORS (Cross-Origin Resource Sharing): Server specifies which origins are allowed to make requests via the Access-Control-Allow-Origin header
+REST: Architectural style that uses HTTP verbs (GET, POST, PUT, DELETE) to act on resources
+Middleware: Functions that process requests in sequence; must call next() to continue the chain
